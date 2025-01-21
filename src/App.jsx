@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import Hero from "./pages/Hero";
+import MainContent from "./pages/MainContent";
 import assets from "./assets/assets";
 
 const LoadingScreen = () => {
@@ -16,7 +15,7 @@ const LoadingScreen = () => {
       />
 
       {/* Loading Animation */}
-      <div className="flex items-center justify-center space-x-2  w-full">
+      <div className="flex items-center justify-center space-x-2 w-full">
         <span className="dot w-4 h-4 rounded-full bg-yellow-500 animate-bounce"></span>
         <span
           className="dot w-4 h-4 rounded-full bg-gray-500 animate-bounce"
@@ -37,7 +36,7 @@ const App = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000); 
+    }, 3000);
 
     return () => clearTimeout(timer); // Cleanup timer on unmount
   }, []);
@@ -47,15 +46,10 @@ const App = () => {
       {isLoading ? (
         <LoadingScreen />
       ) : (
-        <div className="bg-gradient-to-b from-purple-100 via-white to-purple-100 min-h-screen no-scrollbar scroll-smooth flex flex-col items-center">
-          <div className="container mx-auto max-w-4xl">
-            <Navbar />
-            <Routes>
-              <Route path="/" element={<Home />} />
-            </Routes>
-            <Footer />
-          </div>
-        </div>
+        <Routes>
+          <Route path="/" element={<Hero />} />
+          <Route path="/influencer" element={<MainContent />} />
+        </Routes>
       )}
     </>
   );
