@@ -101,7 +101,7 @@ const Home = () => {
           </Slider>
         </div>
       </section>
-      <div className="p-4 bg-gradient-to-b from-gray-100 to mb-40">
+      <div className=" bg-gradient-to-b from-gray-100 to mb-40">
         <h1 className="text-3xl text-center font-semibold mt-4">Trending</h1>
         <TrendingCrads />
         <ForYou />

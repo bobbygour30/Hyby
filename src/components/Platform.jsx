@@ -12,9 +12,13 @@ import {
   faYoutube,
   faFacebook,
 } from "@fortawesome/free-brands-svg-icons";
+import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 
 const Platform = () => {
   const [likedCards, setLikedCards] = useState({});
+  const [savedCards, setSavedCards] = useState({});
+  const [selectedCards, setSelectedCards] = useState({});
   const [activeCategory, setActiveCategory] = useState("YouTube");
 
   const platformColors = {
@@ -33,9 +37,9 @@ const Platform = () => {
       name: "Alice Johnson",
       image: `${assets.people1}`,
       followers: {
-        instagram: "2.5 Million",
-        youtube: "1.2 Million",
-        facebook: "3.1 Million",
+        instagram: "2.5 M",
+        youtube: "1.2 M",
+        facebook: "3.1 M",
       },
     },
     {
@@ -43,9 +47,9 @@ const Platform = () => {
       name: "Bob Brown",
       image: `${assets.people2}`,
       followers: {
-        instagram: "3.3 Million",
-        youtube: "2.5 Million",
-        facebook: "4.0 Million",
+        instagram: "3.3 M",
+        youtube: "2.5 M",
+        facebook: "4.0 M",
       },
     },
     {
@@ -53,9 +57,9 @@ const Platform = () => {
       name: "Charlie Davis",
       image: `${assets.people3}`,
       followers: {
-        instagram: "4.1 Million",
-        youtube: "3.7 Million",
-        facebook: "5.2 Million",
+        instagram: "4.1 M",
+        youtube: "3.7 M",
+        facebook: "5.2 M",
       },
     },
     {
@@ -63,9 +67,9 @@ const Platform = () => {
       name: "Eve Wilson",
       image: `${assets.people1}`,
       followers: {
-        instagram: "2.0 Million",
-        youtube: "1.5 Million",
-        facebook: "3.5 Million",
+        instagram: "2.0 M",
+        youtube: "1.5 M",
+        facebook: "3.5 M",
       },
     },
     {
@@ -73,9 +77,9 @@ const Platform = () => {
       name: "Frank Thompson",
       image: `${assets.people2}`,
       followers: {
-        instagram: "1.8 Million",
-        youtube: "2.2 Million",
-        facebook: "3.9 Million",
+        instagram: "1.8 M",
+        youtube: "2.2 M",
+        facebook: "3.9 M",
       },
     },
   ];
@@ -90,7 +94,7 @@ const Platform = () => {
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 3, // Show 3 cards on small screens
           slidesToScroll: 1,
         },
       },
@@ -99,6 +103,12 @@ const Platform = () => {
 
   const toggleLike = (id) => {
     setLikedCards((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+  const toggleSave = (id) => {
+    setSavedCards((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+  const toggleSelect = (id) => {
+    setSelectedCards((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   return (
@@ -124,44 +134,97 @@ const Platform = () => {
 
       <Slider {...sliderSettings}>
         {cards.map((card) => (
-          <div key={card.id} className="p-4">
-            <div className="bg-white shadow-lg rounded-lg overflow-hidden relative">
+          <div key={card.id} className="p-2 md:p-4">
+            <div className="bg-white shadow-lg rounded-lg overflow-hidden relative md:scale-100 sm:scale-90 sm:max-w-xs mx-auto transition-transform">
               <img
                 src={card.image}
                 alt={card.name}
-                className="w-full h-64 object-cover"
+                className="w-full h-40 md:h-64 object-cover sm:h-32"
               />
+              {/* Like Icon */}
               <button
                 onClick={() => toggleLike(card.id)}
-                className="absolute top-4 right-4 text-red-500 text-2xl focus:outline-none"
+                className="absolute top-2 right-2 text-red-500 text-xl sm:text-lg focus:outline-none"
               >
-                <div className="px-2 bg-white rounded-lg shadow-lg">
+                <div className="px-1 bg-white rounded-lg shadow-md">
                   <FontAwesomeIcon
-                    icon={likedCards[card.id] ? regularHeart : solidHeart}
+                    icon={likedCards[card.id] ? solidHeart : regularHeart}
                   />
                 </div>
               </button>
-              <div className="p-4">
-                <h3 className="text-xl font-bold text-center">{card.name}</h3>
-                <div className="text-gray-600 text-center mt-3">
-                  <p>
-                    <span className="font-semibold text-pink-500">
-                      <FontAwesomeIcon icon={faInstagram} className="mr-2" />{" "}
+              <div className="p-2 sm:p-1">
+                <h3 className="text-[10px] font-bold text-center lg:text-lg">
+                  {card.name}
+                </h3>
+                <div className="text-gray-600 text-center mt-2 sm:mt-1">
+                  <p className="flex justify-center items-center gap-1">
+                    <FontAwesomeIcon
+                      icon={faInstagram}
+                      className="text-pink-500 text-sm lg:text-lg "
+                    />
+                    <span className="font-semibold text-pink-500 text-sm hidden sm:inline-block">
                       Instagram: {card.followers.instagram}
-                    </span>{" "}
+                    </span>
+                    <span className="font-semibold text-pink-500 text-xs lg:text-lg sm:hidden">
+                      {card.followers.instagram}
+                    </span>
                   </p>
-                  <p>
-                    <span className="font-semibold text-red-500">
-                      <FontAwesomeIcon icon={faYoutube} className="mr-2" />{" "}
+                  {/* YouTube */}
+                  <p className="flex justify-center items-center gap-1">
+                    <FontAwesomeIcon
+                      icon={faYoutube}
+                      className="text-red-500 text-sm lg:text-lg"
+                    />
+                    <span className="font-semibold text-red-500 text-sm hidden sm:inline-block">
                       YouTube: {card.followers.youtube}
-                    </span>{" "}
+                    </span>
+                    <span className="font-semibold text-red-500 text-xs lg:text-lg sm:hidden">
+                      {card.followers.youtube}
+                    </span>
                   </p>
-                  <p>
-                    <span className="font-semibold text-blue-500">
-                      <FontAwesomeIcon icon={faFacebook} className="mr-2" />{" "}
+                  {/* Facebook */}
+                  <p className="flex justify-center items-center gap-1">
+                    <FontAwesomeIcon
+                      icon={faFacebook}
+                      className="text-blue-500 text-sm lg:text-lg"
+                    />
+                    <span className="font-semibold text-blue-500 text-sm hidden sm:inline-block">
                       Facebook: {card.followers.facebook}
-                    </span>{" "}
+                    </span>
+                    <span className="font-semibold text-blue-500 text-xs lg:text-lg sm:hidden">
+                      {card.followers.facebook}
+                    </span>
                   </p>
+                  <div className="flex flex-row justify-between mt-2 sm:mt-1">
+                    <button
+                      onClick={() => toggleSelect(card.id)}
+                      className={`px-3 py-1 text-white font-semibold rounded-full transition-all 
+    sm:text-lg sm:px-6 sm:py-2 sm:rounded-full 
+    ${
+      selectedCards[card.id]
+        ? "bg-green-600"
+        : "bg-green-400 hover:bg-green-500"
+    } 
+    shadow-md focus:outline-none focus:ring-2 focus:ring-green-300`}
+                    >
+                      {selectedCards[card.id] ? "Selected" : "Select"}
+                    </button>
+
+                    <button
+                      onClick={() => toggleSave(card.id)}
+                      className="text-yellow-500 text-sm lg:text-lg  mr-1 focus:outline-none"
+                    >
+                      <div>
+                        <FontAwesomeIcon
+                          icon={
+                            savedCards[card.id]
+                              ? solidBookmark
+                              : regularBookmark
+                          }
+                        />
+                      </div>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -169,9 +232,12 @@ const Platform = () => {
         ))}
       </Slider>
       <div className="flex justify-center mt-4">
-        <button className="flex items-center justify-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-lg transition-all hover:scale-105 shadow-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">
+        <button className="flex items-center justify-center gap-2 px-4 py-2 rounded-full text-white font-semibold text-sm md:text-lg transition-all hover:scale-105 shadow-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">
           See More
-          <FontAwesomeIcon icon={faArrowRight} className="ml-1 text-xl" />
+          <FontAwesomeIcon
+            icon={faArrowRight}
+            className="ml-1 text-lg md:text-xl"
+          />
         </button>
       </div>
     </div>
