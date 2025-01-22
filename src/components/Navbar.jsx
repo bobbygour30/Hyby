@@ -1,10 +1,11 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
-  const [isBookmarked, setIsBookmarked] = useState(false); 
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked); 
+    setIsBookmarked(!isBookmarked);
   };
 
   return (
@@ -27,15 +28,20 @@ const Navbar = () => {
           {/* Bookmark Icon */}
           <button onClick={toggleBookmark} className="text-yellow-500 text-xl">
             {isBookmarked ? (
-              <i className="fas fa-bookmark"></i> 
+              <i className="fas fa-bookmark"></i>
             ) : (
-              <i className="far fa-bookmark"></i> 
+              <i className="far fa-bookmark"></i>
             )}
           </button>
 
           {/* Flame Icon */}
-          <div className="flex items-center space-x-1">
-            <i className="fas fa-fire text-xl text-orange-500"></i>
+          <div className="flex items-center space-x-1 ">
+            <Link to="/fire">
+              <button>
+                <i className="cursor-pointer fas fa-fire text-xl text-orange-500"></i>
+              </button>
+            </Link>
+
             <span className="text-gray-700 font-medium">10</span>
           </div>
         </div>
