@@ -7,6 +7,16 @@ export default {
   darkMode:"class",
   theme: {
     extend: {
+      scrollbar: {
+        hide: {
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+          /* Hide scrollbar for IE, Edge, and Firefox */
+          "-ms-overflow-style": "none", // IE and Edge
+          "scrollbar-width": "none", // Firefox
+        },
+      },
       animation: {
         first: "moveVertical 30s ease infinite",
         second: "moveInCircle 20s reverse infinite",

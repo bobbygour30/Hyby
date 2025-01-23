@@ -3,17 +3,6 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const Fire = () => {
-  // Reusable Card Component
-  const RewardCard = ({ amount, reward }) => (
-    <div className="flex flex-col items-center bg-gradient-to-br from-orange-300 to-red-400 rounded-xl shadow-lg p-4 md:p-6 text-white w-28 sm:w-32 md:w-48 hover:scale-105 transition-transform duration-300">
-      <span className="font-medium text-xs bg-orange-500 rounded-full px-3 py-1 mb-2 md:mb-3">
-        Withdraw
-      </span>
-      <h2 className="text-xl md:text-3xl font-extrabold">{amount}</h2>
-      <p className="text-xs md:text-sm mt-1 md:mt-2">You will get {reward}</p>
-    </div>
-  );
-
   return (
     <>
       <div className="max-w-3xl mx-auto">
@@ -25,11 +14,28 @@ const Fire = () => {
           You Have <span className="text-orange-500">10</span> Free Fires By
           More.
         </h2>
-        <div className="flex flex-row sm:flex-row sm:overflow-x-auto sm:space-x-4 gap-4 sm:gap-0">
-          {/* Reward Cards */}
-          <RewardCard amount="10K 🔥" reward="10,000 ₹" />
-          <RewardCard amount="20K 🔥" reward="20,000 ₹" />
-          <RewardCard amount="50K 🔥" reward="50,000 ₹" />
+        <div className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-col items-center bg-gradient-to-br from-orange-300 to-red-400 rounded-xl shadow-lg p-4 md:p-6 text-white w-28 sm:w-32 md:w-48 hover:scale-105 transition-transform duration-300">
+            <span className="font-medium text-xs bg-orange-500 rounded-full px-3 py-1 mb-2 md:mb-3">
+              Withdraw
+            </span>
+            <h2 className="text-xl md:text-3xl font-extrabold">10K 🔥</h2>
+            <p className="text-xs md:text-sm mt-1 md:mt-2">You will get 10,000 ₹</p>
+          </div>
+          <div className="flex flex-col items-center bg-gradient-to-br from-orange-300 to-red-400 rounded-xl shadow-lg p-4 md:p-6 text-white w-28 sm:w-32 md:w-48 hover:scale-105 transition-transform duration-300">
+            <span className="font-medium text-xs bg-orange-500 rounded-full px-3 py-1 mb-2 md:mb-3">
+              Withdraw
+            </span>
+            <h2 className="text-xl md:text-3xl font-extrabold">20K 🔥</h2>
+            <p className="text-xs md:text-sm mt-1 md:mt-2">You will get 20,000 ₹</p>
+          </div>
+          <div className="flex flex-col items-center bg-gradient-to-br from-orange-300 to-red-400 rounded-xl shadow-lg p-4 md:p-6 text-white w-28 sm:w-32 md:w-48 hover:scale-105 transition-transform duration-300">
+            <span className="font-medium text-xs bg-orange-500 rounded-full px-3 py-1 mb-2 md:mb-3">
+              Withdraw
+            </span>
+            <h2 className="text-xl md:text-3xl font-extrabold">50K 🔥</h2>
+            <p className="text-xs md:text-sm mt-1 md:mt-2">You will get 50,000 ₹</p>
+          </div>
         </div>
 
         {/* What Is Fire Section */}
@@ -72,7 +78,7 @@ const Fire = () => {
           <p className="text-gray-700 text-sm sm:text-base md:text-lg mb-8">
             Get more Fire at discounted prices!
           </p>
-          <div className="flex flex-col    gap-4 w-full mb-16">
+          <div className="flex flex-col gap-4 w-full mb-16">
             <div className="flex justify-between items-center bg-gray-100 rounded-lg p-4 shadow-lg hover:bg-gray-200 transition-colors duration-300 min-w-[200px]">
               <span className="flex items-center text-gray-800 font-medium">
                 <span role="img" aria-label="fire">

@@ -4,6 +4,8 @@ import Hero from "./pages/Hero";
 import MainContent from "./pages/MainContent"; // Main content that includes the routes for Home and Fire
 import Fire from "./pages/Fire"; // Import the Fire component
 import assets from "./assets/assets";
+import "./index.css";
+import Projects from "./pages/Projects";
 
 // LoadingScreen Component: Displayed while the app is loading
 const LoadingScreen = () => {
@@ -53,6 +55,7 @@ const App = () => {
           <Route path="/" element={<Hero />} />
           <Route path="/influencer" element={<MainContent />} />
           <Route path="/fire" element={<Fire />} /> {/* Add route for Fire component */}
+          <Route path="/projects" element={<Projects />} />
         </Routes>
       )}
     </>

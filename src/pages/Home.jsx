@@ -10,6 +10,7 @@ import Category from "../components/Category";
 
 const Home = () => {
   const [selected, setSelected] = useState(null);
+  
 
   const languages = [
     { name: "Hindi", nativeName: "हिन्दी" },
@@ -36,7 +37,13 @@ const Home = () => {
   return (
     <div>
       <div className="flex justify-center bg-gradient-to-b from-gray-100 to-purple-100">
-        <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-gray-200">
+        <div
+          className="overflow-x-auto"
+          style={{
+            msOverflowStyle: "none", // IE and Edge
+            scrollbarWidth: "none", // Firefox
+          }}
+        >
           <div className="flex gap-4 p-4 w-full">
             {languages.map((lang, index) => (
               <div

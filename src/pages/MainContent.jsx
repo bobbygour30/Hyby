@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Fire from "../pages/Fire";
+import Projects from "../pages/Projects";
 
 
 const MainContent = () => {
@@ -15,6 +16,7 @@ const MainContent = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/fire" element={<Fire />} />
+            <Route path="/projects" element={<Projects />} />
           </Routes>
           <Footer />
         </div>
