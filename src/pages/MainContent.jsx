@@ -6,10 +6,12 @@ import Footer from "../components/Footer";
 import Fire from "../pages/Fire";
 import Projects from "../pages/Projects";
 import Profile from "../pages/Profile";
+import Share from "../pages/Share";
 
 
 const MainContent = () => {
   return (
+    
     
       <div className="bg-gradient-to-b from-purple-100 via-white to-purple-100 min-h-screen no-scrollbar scroll-smooth flex flex-col items-center overflow-x-hidden">
         <div className="container mx-auto max-w-3xl">
@@ -19,6 +21,7 @@ const MainContent = () => {
             <Route path="/fire" element={<Fire />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/login" element={<Profile />} />
+            <Route path="/share" element={<Share />} />
           </Routes>
           <Footer />
         </div>

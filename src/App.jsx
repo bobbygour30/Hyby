@@ -7,6 +7,7 @@ import assets from "./assets/assets";
 import "./index.css";
 import Projects from "./pages/Projects";
 import Profile from "./pages/Profile";
+import Share from "./pages/Share";
 
 // LoadingScreen Component: Displayed while the app is loading
 const LoadingScreen = () => {
@@ -58,6 +59,7 @@ const App = () => {
           <Route path="/fire" element={<Fire />} /> {/* Add route for Fire component */}
           <Route path="/projects" element={<Projects />} />
           <Route path="/login" element={<Profile />} />
+          <Route path="/share" element={<Share />} />
         </Routes>
       )}
     </>
