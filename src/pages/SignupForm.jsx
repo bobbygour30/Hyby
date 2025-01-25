@@ -1,8 +1,8 @@
 import { useState } from "react";
-
 import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
 import assets from "../assets/assets";
 import { Button } from "../components/Button";
+
 export function SignupForm() {
   const [userType, setUserType] = useState("influencer");
   const [formData, setFormData] = useState({
@@ -46,9 +46,9 @@ export function SignupForm() {
 
   return (
     <div className="min-h-screen relative">
-      <BackgroundGradientAnimation containerClassName="absolute inset-0 z-0" />
+      <BackgroundGradientAnimation containerClassName="absolute inset-0 z-0 h-full" />
 
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen w-full max-w-md mx-auto p-6 rounded-3xl  text-white">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen w-full max-w-md mx-auto p-6 rounded-3xl text-white">
         <div className="flex items-center justify-end mb-6">
           <div className="flex rounded-full bg-gray-800 p-1">
             <button
@@ -87,7 +87,7 @@ export function SignupForm() {
               name="fullName"
               type="text"
               placeholder="Jasmine Bhandari"
-              className="w-full p-2 rounded-full bg-gray-200 text-black"
+              className="w-full p-2 sm:p-1 rounded-full bg-gray-200 text-black"
               value={formData.fullName}
               onChange={handleInputChange}
               required
@@ -103,7 +103,7 @@ export function SignupForm() {
               name="email"
               type="email"
               placeholder="Jasmine.98@Gmail.Com"
-              className="w-full p-2 rounded-full bg-gray-200 text-black"
+              className="w-full p-2 sm:p-1 rounded-full bg-gray-200 text-black"
               value={formData.email}
               onChange={handleInputChange}
               required
@@ -117,7 +117,7 @@ export function SignupForm() {
             >
               Mobile Number
             </label>
-            <div className="flex gap-2">
+            <div className="flex gap-2 sm:gap-1">
               <div className="flex bg-gray-200 border text-black border-gray-700 rounded-full items-center px-3 w-20">
                 <img src={assets.Flag} alt="IN" className="mr-1 w-4 h-4" />
                 <span>+91</span>
@@ -127,13 +127,13 @@ export function SignupForm() {
                 name="phoneNumber"
                 type="tel"
                 placeholder="80 766 12345"
-                className="flex-1 p-2 rounded-full bg-gray-200 text-black"
+                className="flex-1 p-2 sm:p-1 rounded-full bg-gray-200 text-black"
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
                 required
               />
             </div>
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 sm:gap-1 mt-2">
               <span className="text-sm">Get Notifications On Your</span>
               <div className="flex items-center gap-1">
                 <span className="text-sm text-green-400">Whatsapp</span>
@@ -151,7 +151,7 @@ export function SignupForm() {
 
           <div>
             <label className="block mb-2 text-sm font-medium">OTP</label>
-            <div className="flex gap-2 justify-between">
+            <div className="flex gap-2 justify-between sm:gap-1">
               {otp.map((digit, idx) => (
                 <input
                   key={idx}
@@ -159,13 +159,13 @@ export function SignupForm() {
                   maxLength={1}
                   value={digit}
                   onChange={(e) => handleOtpChange(e, idx)}
-                  className="w-10 h-10 text-center p-2 rounded-full bg-gray-200 text-black"
+                  className="w-10 h-10 text-center p-2 sm:p-1 rounded-full bg-gray-200 text-black"
                 />
               ))}
             </div>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 sm:gap-2">
             <div className="flex-1">
               <label
                 htmlFor="category"
@@ -176,7 +176,7 @@ export function SignupForm() {
               <select
                 id="category"
                 name="category"
-                className="w-full p-2 rounded-full bg-gray-200 text-black"
+                className="w-full p-2 sm:p-1 rounded-full bg-gray-200 text-black"
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, category: e.target.value }))
                 }
@@ -198,7 +198,7 @@ export function SignupForm() {
               <select
                 id="language"
                 name="language"
-                className="w-full p-2 rounded-full bg-gray-200 text-black"
+                className="w-full p-2 sm:p-1 rounded-full bg-gray-200 text-black"
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, language: e.target.value }))
                 }
@@ -222,7 +222,7 @@ export function SignupForm() {
               name="instagramUsername"
               type="text"
               placeholder="Jasmine_bhandari_4567"
-              className="w-full p-2 rounded-full bg-gray-200 text-black"
+              className="w-full p-2 sm:p-1 rounded-full bg-gray-200 text-black"
               value={formData.instagramUsername}
               onChange={handleInputChange}
             />
@@ -240,7 +240,7 @@ export function SignupForm() {
               name="youtubeLink"
               type="url"
               placeholder="www.youtube.com/@jasmine123bhand..."
-              className="w-full p-2 rounded-full bg-gray-200 text-black"
+              className="w-full p-2 sm:p-1 rounded-full bg-gray-200 text-black"
               value={formData.youtubeLink}
               onChange={handleInputChange}
             />
@@ -258,7 +258,7 @@ export function SignupForm() {
               name="facebookLink"
               type="url"
               placeholder="www.facebook.com/@jasmine3546bh..."
-              className="w-full p-2 rounded-full bg-gray-200 text-black"
+              className="w-full p-2 sm:p-1 rounded-full bg-gray-200 text-black"
               value={formData.facebookLink}
               onChange={handleInputChange}
             />
@@ -266,7 +266,7 @@ export function SignupForm() {
 
           <Button
             type="submit"
-            className="w-full rounded-full bg-gray-900 hover:bg-gray-800 text-white py-4 sm:py-2"
+            className="w-full rounded-full bg-gray-900 hover:bg-gray-800 text-white py-2 sm:py-2"
           >
             Sign Up
           </Button>
