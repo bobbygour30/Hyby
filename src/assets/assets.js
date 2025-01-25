@@ -6,6 +6,8 @@ import people2 from './people2.jpg';
 import people3 from './people3.jpg';
 import hero from './hero.jpg';
 import logo from './logo.png';
+import Flag from './flag.svg';
+import Google from './google.webp';
 
 
 const assets = {
@@ -16,7 +18,10 @@ const assets = {
     people2,
     people3,
     hero,
-    logo
+    logo,
+    Flag,
+    Google
+
 };
 
 export default assets;

@@ -5,8 +5,10 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Fire from "../pages/Fire";
 import Projects from "../pages/Projects";
-import Profile from "../pages/Profile";
+
 import Share from "../pages/Share";
+import { Login } from "../pages/Login";
+import { SignupForm } from "../pages/SignupForm";
 
 
 const MainContent = () => {
@@ -20,8 +22,9 @@ const MainContent = () => {
             <Route path="/" element={<Home />} />
             <Route path="/fire" element={<Fire />} />
             <Route path="/projects" element={<Projects />} />
-            <Route path="/login" element={<Profile />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/share" element={<Share />} />
+            <Route path="/sign-up" element={<SignupForm />} />
           </Routes>
           <Footer />
         </div>
