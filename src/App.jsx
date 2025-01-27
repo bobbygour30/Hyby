@@ -10,6 +10,7 @@ import Projects from "./pages/Projects";
 import Share from "./pages/Share";
 import { Login } from "./pages/Login";
 import { SignupForm } from "./pages/SignupForm";
+import Notifications from "./pages/Notification";
 
 // LoadingScreen Component: Displayed while the app is loading
 const LoadingScreen = () => {
@@ -63,6 +64,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignupForm />} />
           <Route path="/share" element={<Share />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Routes>
       )}
     </>

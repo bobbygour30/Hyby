@@ -9,6 +9,7 @@ import Projects from "../pages/Projects";
 import Share from "../pages/Share";
 import { Login } from "../pages/Login";
 import { SignupForm } from "../pages/SignupForm";
+import Notifications from "../pages/Notification";
 
 
 const MainContent = () => {
@@ -25,6 +26,7 @@ const MainContent = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/share" element={<Share />} />
             <Route path="/sign-up" element={<SignupForm />} />
+            <Route path="/notifications" element={<Notifications />} />
           </Routes>
           <Footer />
         </div>
