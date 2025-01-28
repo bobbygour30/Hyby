@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
 import assets from "../assets/assets";
 import { Button } from "../components/Button";
+import { Eye, EyeOff } from "lucide-react";
 
 export function SignupForm() {
   const [userType, setUserType] = useState("influencer"); // "brand" or "influencer"
@@ -9,8 +10,9 @@ export function SignupForm() {
     brandName: "",
     fullName: "",
     email: "",
+    password: "",
+    confirmPassword: "",
     phoneNumber: "",
-    otp: "",
     aboutCompany: "",
     category: "",
     gstCin: "",
@@ -18,7 +20,10 @@ export function SignupForm() {
     youtubeLink: "",
     facebookLink: "",
   });
-  const [whatsappNotifications, setWhatsappNotifications] = useState(false);
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    password: false,
+    confirmPassword: false,
+  });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
@@ -26,15 +31,52 @@ export function SignupForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const togglePasswordVisibility = (field) => {
+    setPasswordVisibility((prev) => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Generate random user_id and referred_by between 1 and 1000
+    const randomUserId = Math.floor(Math.random() * 1000) + 1;
+    const randomReferredBy = Math.floor(Math.random() * 1000) + 1;
+  
+    // Password Validation (at least 8 characters long, must contain numbers and letters)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    
+    if (!passwordRegex.test(formData.password)) {
+      alert("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.");
+      return;
+    }
+  
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+  
+    // Create payload
     const payload = {
-      ...formData,
-      userType,
-      whatsappNotifications,
+      user_id: randomUserId, // Random user ID
+      username: userType === "brand" ? formData.brandName : formData.fullName,
+      email: formData.email,
+      password: formData.password,
+      social_media:
+        userType === "influencer"
+          ? {
+              instagram: formData.instagramUsername,
+              youtube: formData.youtubeLink,
+              facebook: formData.facebookLink,
+            }
+          : {},
+      reffered_by: randomReferredBy, // Random referred_by ID
+      status: false, // Default status
     };
-
+  
     setIsLoading(true);
     try {
       const response = await fetch("http://75.119.146.185:4444/api/adduser", {
@@ -44,21 +86,37 @@ export function SignupForm() {
         },
         body: JSON.stringify(payload),
       });
-
+  
       if (!response.ok) {
-        throw new Error("Failed to submit the form.");
+        const errorData = await response.json();
+        throw new Error(errorData?.detail || "Failed to submit the form.");
       }
-
+  
       const data = await response.json();
       console.log("Form submitted successfully:", data);
       alert("Signup successful!");
+      setFormData({
+        brandName: "",
+        fullName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        phoneNumber: "",
+        aboutCompany: "",
+        category: "",
+        gstCin: "",
+        instagramUsername: "",
+        youtubeLink: "",
+        facebookLink: "",
+      });
     } catch (error) {
       console.error("Error submitting the form:", error);
-      alert("Failed to submit the form. Please try again.");
+      alert(error.message || "Failed to submit the form. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen relative">
@@ -94,7 +152,10 @@ export function SignupForm() {
         {userType === "brand" && (
           <form onSubmit={handleSubmit} className="space-y-4 w-full">
             <div>
-              <label htmlFor="brandName" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="brandName"
+                className="block mb-2 text-sm font-medium"
+              >
                 Brand Name
               </label>
               <input
@@ -109,7 +170,10 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="fullName" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="fullName"
+                className="block mb-2 text-sm font-medium"
+              >
                 Your Full Name
               </label>
               <input
@@ -131,7 +195,7 @@ export function SignupForm() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="Abhishek99Sharma@Gmail.Com"
+                placeholder="example@domain.com"
                 className="w-full p-2 rounded-full bg-gray-200 text-black"
                 value={formData.email}
                 onChange={handleInputChange}
@@ -139,7 +203,10 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="phoneNumber"
+                className="block mb-2 text-sm font-medium"
+              >
                 Mobile Number
               </label>
               <div className="flex gap-2">
@@ -160,7 +227,10 @@ export function SignupForm() {
               </div>
             </div>
             <div>
-              <label htmlFor="aboutCompany" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="aboutCompany"
+                className="block mb-2 text-sm font-medium"
+              >
                 About Your Company
               </label>
               <textarea
@@ -174,7 +244,10 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="category" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="category"
+                className="block mb-2 text-sm font-medium"
+              >
                 Category
               </label>
               <input
@@ -189,7 +262,10 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="gstCin" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="gstCin"
+                className="block mb-2 text-sm font-medium"
+              >
                 GST, CIN Number or License
               </label>
               <input
@@ -217,7 +293,10 @@ export function SignupForm() {
         {userType === "influencer" && (
           <form onSubmit={handleSubmit} className="space-y-4 w-full">
             <div>
-              <label htmlFor="fullName" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="fullName"
+                className="block mb-2 text-sm font-medium"
+              >
                 Your Full Name
               </label>
               <input
@@ -232,14 +311,17 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="instagramUsername" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="instagramUsername"
+                className="block mb-2 text-sm font-medium"
+              >
                 Instagram Username
               </label>
               <input
                 id="instagramUsername"
                 name="instagramUsername"
                 type="text"
-                placeholder="Jasmine_bhandari_4567"
+                placeholder="jasmine_bhandari_4567"
                 className="w-full p-2 rounded-full bg-gray-200 text-black"
                 value={formData.instagramUsername}
                 onChange={handleInputChange}
@@ -247,40 +329,115 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="youtubeLink" className="block mb-2 text-sm font-medium">
-                Youtube Link
+              <label htmlFor="email" className="block mb-2 text-sm font-medium">
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="example@domain.com"
+                className="w-full p-2 rounded-full bg-gray-200 text-black"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium"
+              >
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={passwordVisibility.password ? "text" : "password"}
+                  placeholder="Enter your password"
+                  className="w-full p-2 rounded-full bg-gray-200 text-black"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                />
+                <span
+                  className="absolute right-3 top-2 cursor-pointer text-black"
+                  onClick={() => togglePasswordVisibility("password")}
+                >
+                  {passwordVisibility.password ? <Eye /> : <EyeOff />}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block mb-2 text-sm font-medium"
+              >
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={
+                    passwordVisibility.confirmPassword ? "text" : "password"
+                  }
+                  placeholder="Confirm your password"
+                  className="w-full p-2 rounded-full bg-gray-200 text-black"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                />
+                <span
+                  className="absolute right-3 top-2 cursor-pointer text-black"
+                  onClick={() => togglePasswordVisibility("confirmPassword")}
+                >
+                  {passwordVisibility.confirmPassword ? <Eye /> : <EyeOff />}
+                </span>
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="youtubeLink"
+                className="block mb-2 text-sm font-medium"
+              >
+                YouTube Channel URL
               </label>
               <input
                 id="youtubeLink"
                 name="youtubeLink"
                 type="url"
-                placeholder="www.youtube.com/@jasmine123bhand..."
+                placeholder="https://youtube.com/channel/xyz"
                 className="w-full p-2 rounded-full bg-gray-200 text-black"
                 value={formData.youtubeLink}
                 onChange={handleInputChange}
               />
             </div>
             <div>
-              <label htmlFor="facebookLink" className="block mb-2 text-sm font-medium">
-                Facebook Link
+              <label
+                htmlFor="facebookLink"
+                className="block mb-2 text-sm font-medium"
+              >
+                Facebook Profile/Business Page URL
               </label>
               <input
                 id="facebookLink"
                 name="facebookLink"
                 type="url"
-                placeholder="www.facebook.com/@jasmine3546bh..."
+                placeholder="https://facebook.com/yourname"
                 className="w-full p-2 rounded-full bg-gray-200 text-black"
                 value={formData.facebookLink}
                 onChange={handleInputChange}
               />
             </div>
-            
             <Button
               type="submit"
               className="w-full rounded-full bg-gray-900 hover:bg-gray-800 text-white py-2"
               disabled={isLoading}
             >
-              {isLoading ? "Signing Up..." : "Sign Up"}
+              {isLoading ? "Signing Up..." : "Submit"}
             </Button>
           </form>
         )}
