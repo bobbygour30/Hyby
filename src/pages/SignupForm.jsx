@@ -1,18 +1,19 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
 import assets from "../assets/assets";
 import { Button } from "../components/Button";
 import { Eye, EyeOff } from "lucide-react";
 
 export function SignupForm() {
-  const [userType, setUserType] = useState("influencer"); // "brand" or "influencer"
+  const navigate = useNavigate();
+  const [userType, setUserType] = useState("influencer");
   const [formData, setFormData] = useState({
     brandName: "",
     fullName: "",
-    email: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
-    phoneNumber: "",
     aboutCompany: "",
     category: "",
     gstCin: "",
@@ -40,30 +41,28 @@ export function SignupForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Generate random user_id and referred_by between 1 and 1000
+
     const randomUserId = Math.floor(Math.random() * 1000) + 1;
     const randomReferredBy = Math.floor(Math.random() * 1000) + 1;
-  
-    // Password Validation (at least 8 characters long, must contain numbers and letters)
+
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-    
+
     if (!passwordRegex.test(formData.password)) {
-      alert("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.");
+      alert(
+        "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+      );
       return;
     }
-  
-    // Check if passwords match
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-  
-    // Create payload
+
     const payload = {
-      user_id: randomUserId, // Random user ID
+      user_id: randomUserId,
       username: userType === "brand" ? formData.brandName : formData.fullName,
-      email: formData.email,
+      phoneNumber: formData.phoneNumber,
       password: formData.password,
       social_media:
         userType === "influencer"
@@ -73,10 +72,10 @@ export function SignupForm() {
               facebook: formData.facebookLink,
             }
           : {},
-      reffered_by: randomReferredBy, // Random referred_by ID
-      status: false, // Default status
+      reffered_by: randomReferredBy,
+      status: false,
     };
-  
+
     setIsLoading(true);
     try {
       const response = await fetch("http://75.119.146.185:4444/api/adduser", {
@@ -86,22 +85,24 @@ export function SignupForm() {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData?.detail || "Failed to submit the form.");
       }
-  
+
       const data = await response.json();
       console.log("Form submitted successfully:", data);
       alert("Signup successful!");
+
+      navigate("/login");
+
       setFormData({
         brandName: "",
         fullName: "",
-        email: "",
+        phoneNumber: "",
         password: "",
         confirmPassword: "",
-        phoneNumber: "",
         aboutCompany: "",
         category: "",
         gstCin: "",
@@ -116,7 +117,6 @@ export function SignupForm() {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="min-h-screen relative">
@@ -148,7 +148,6 @@ export function SignupForm() {
           </div>
         </div>
 
-        {/* Brand Form */}
         {userType === "brand" && (
           <form onSubmit={handleSubmit} className="space-y-4 w-full">
             <div>
@@ -329,16 +328,19 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium">
-                Email
+              <label
+                htmlFor="phoneNumber"
+                className="block mb-2 text-sm font-medium"
+              >
+                Mobile Number
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="example@domain.com"
+                id="phoneNumber"
+                name="phoneNumber"
+                type="tel"
+                placeholder="9876543210"
                 className="w-full p-2 rounded-full bg-gray-200 text-black"
-                value={formData.email}
+                value={formData.phoneNumber}
                 onChange={handleInputChange}
                 required
               />
