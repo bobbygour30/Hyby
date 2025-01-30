@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "../components/Button";
@@ -15,6 +15,14 @@ export function Login() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    if (user) {
+      navigate("/profile"); // Redirect logged-in users to their profile page
+    }
+  }, [navigate]);
 
   const togglePasswordVisibility = () => {
     setPasswordVisibility((prev) => !prev);
@@ -35,36 +43,32 @@ export function Login() {
     }
 
     try {
-      const response = await fetch(`http://75.119.146.185:4444/api/get_byphone/${formData.phone}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log(response);
-      
+      const response = await fetch(
+        `http://75.119.146.185:4444/api/get_byphone/${formData.phone}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("User not found");
       }
 
       const user = await response.json();
-      console.log(user);
-      
 
       if (user && user.password === formData.password) {
         alert("Login successful!");
-        navigate("/influencer");
+        localStorage.setItem("user", JSON.stringify(user)); // Save user to localStorage
+        navigate("/profile");
       } else {
         setErrorMessage("Invalid phone number or password.");
       }
     } catch (error) {
       console.error("Error fetching user:", error);
-      if (error.response && error.response.status === 422) {
-        setErrorMessage("Invalid input. Please check your phone number and password.");
-      } else {
-        setErrorMessage("Invalid phone number or password.");
-      }
+      setErrorMessage("Invalid phone number or password.");
     } finally {
       setLoading(false);
     }
@@ -77,9 +81,15 @@ export function Login() {
           Welcome Back!
         </h1>
 
-        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 sm:space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-md space-y-4 sm:space-y-6"
+        >
           <div>
-            <label htmlFor="phone" className="block mb-2 text-sm font-medium text-black">
+            <label
+              htmlFor="phone"
+              className="block mb-2 text-sm font-medium text-black"
+            >
               Mobile Number
             </label>
             <div className="flex gap-2">
@@ -101,7 +111,10 @@ export function Login() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block mb-2 text-sm font-medium text-black">
+            <label
+              htmlFor="password"
+              className="block mb-2 text-sm font-medium text-black"
+            >
               Password
             </label>
             <div className="relative">
@@ -124,7 +137,9 @@ export function Login() {
             </div>
           </div>
 
-          {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+          {errorMessage && (
+            <p className="text-red-500 text-sm">{errorMessage}</p>
+          )}
 
           <Button
             type="submit"
@@ -136,7 +151,10 @@ export function Login() {
 
           <p className="text-center text-black">
             New User?{" "}
-            <button className="text-yellow-500" onClick={() => navigate("/sign-up")}>
+            <button
+              className="text-yellow-500"
+              onClick={() => navigate("/sign-up")}
+            >
               Sign Up
             </button>
           </p>

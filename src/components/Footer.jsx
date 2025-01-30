@@ -1,20 +1,26 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom"; // Import Link and useLocation
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
-  const location = useLocation(); // Get the current location
-  const [selected, setSelected] = useState(location.pathname); // Set default selected icon based on URL
+  const location = useLocation();
+  const [selected, setSelected] = useState(location.pathname);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    setIsLoggedIn(!!user); // Convert to boolean
+  }, []);
 
   const menuItems = [
     { name: "HOME", icon: "fa-home", path: "/" },
     { name: "PROJECTS", icon: "fa-chart-bar", path: "/projects" },
     { name: "SHARE", icon: "fa-share-alt", path: "/share" },
     { name: "NOTIFICATION", icon: "fa-bell", path: "/notifications" },
-    { name: "LOGIN", icon: "fa-user", path: "/login" },
+    { name: isLoggedIn ? "PROFILE" : "LOGIN", icon: "fa-user", path: isLoggedIn ? "/profile" : "/login" },
   ];
 
   const handleSelect = (path) => {
-    setSelected(path); // Update the selected state
+    setSelected(path);
   };
 
   return (
@@ -23,11 +29,11 @@ const Footer = () => {
         {menuItems.map((item) => (
           <Link
             key={item.name}
-            to={item.path} // Add navigation path
+            to={item.path}
             className={`flex flex-col items-center cursor-pointer ${
               selected === item.path ? "text-yellow-500" : "text-gray-800"
             }`}
-            onClick={() => handleSelect(item.path)} // Set selected icon
+            onClick={() => handleSelect(item.path)}
           >
             <i className={`fas ${item.icon} text-xl lg:text-2xl`}></i>
             <span className="text-[10px] font-medium">{item.name}</span>
