@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "../components/Button";
 import assets from "../assets/assets";
-import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
+// import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
 
 export function Login() {
   const [formData, setFormData] = useState({ phoneNumber: "", password: "" });
@@ -51,10 +51,10 @@ export function Login() {
   };
 
   return (
-    <div className="min-h-screen relative">
-      <BackgroundGradientAnimation containerClassName="absolute inset-0 z-0" />
+    <div className="min-h-screen relative bg-gradient-to-b from-purple-100 via-white to-purple-100">
+      {/* <BackgroundGradientAnimation containerClassName="absolute inset-0 z-0" /> */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen w-full max-w-md mx-auto p-6 rounded-3xl text-white">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-script text-white mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-script text-black mb-6 sm:mb-8">
           Welcome Back!
         </h1>
 
@@ -78,7 +78,7 @@ export function Login() {
             {loading ? "Logging in..." : "Log In"}
           </Button>
 
-          <p className="text-center text-white">
+          <p className="text-center text-black">
             New User?{" "}
             <button className="text-yellow-500" onClick={() => navigate("/sign-up")}>
               Sign Up

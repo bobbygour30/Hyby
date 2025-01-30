@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
+// import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
 import assets from "../assets/assets";
 import { Button } from "../components/Button";
 import { Eye, EyeOff } from "lucide-react";
@@ -119,8 +119,8 @@ export function SignupForm() {
   };
 
   return (
-    <div className="min-h-screen relative">
-      <BackgroundGradientAnimation containerClassName="absolute inset-0 z-0 h-full" />
+    <div className="min-h-screen relative bg-gradient-to-b from-purple-100 via-white to-purple-100">
+      {/* <BackgroundGradientAnimation containerClassName="absolute inset-0 z-0 h-full" /> */}
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen w-full max-w-md mx-auto p-6 rounded-3xl text-white">
         <div className="flex items-center justify-center mb-6">
@@ -153,7 +153,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="brandName"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Brand Name
               </label>
@@ -171,7 +171,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="fullName"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Your Full Name
               </label>
@@ -187,7 +187,7 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium">
+              <label htmlFor="email" className="block mb-2 text-sm font-medium text-black">
                 Email
               </label>
               <input
@@ -204,12 +204,12 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="phoneNumber"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Mobile Number
               </label>
               <div className="flex gap-2">
-                <div className="flex bg-gray-200 border text-black border-gray-700 rounded-full items-center px-3 w-20">
+                <div className="flex bg-gray-200 text-black  rounded-full items-center px-3 w-20">
                   <img src={assets.Flag} alt="IN" className="mr-1 w-4 h-4" />
                   <span>+91</span>
                 </div>
@@ -228,7 +228,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="aboutCompany"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 About Your Company
               </label>
@@ -245,7 +245,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="category"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Category
               </label>
@@ -263,7 +263,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="gstCin"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 GST, CIN Number or License
               </label>
@@ -294,7 +294,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="fullName"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Your Full Name
               </label>
@@ -312,7 +312,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="instagramUsername"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Instagram Username
               </label>
@@ -330,7 +330,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="phoneNumber"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Mobile Number
               </label>
@@ -348,7 +348,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="password"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Password
               </label>
@@ -375,7 +375,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Confirm Password
               </label>
@@ -403,7 +403,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="youtubeLink"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 YouTube Channel URL
               </label>
@@ -420,7 +420,7 @@ export function SignupForm() {
             <div>
               <label
                 htmlFor="facebookLink"
-                className="block mb-2 text-sm font-medium"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Facebook Profile/Business Page URL
               </label>

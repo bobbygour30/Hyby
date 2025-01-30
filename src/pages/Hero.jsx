@@ -1,12 +1,11 @@
 import React from "react";
-import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
+// import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
 import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <BackgroundGradientAnimation>
-      {/* Main container with background effect */}
-      <div className="absolute z-50 inset-0 flex items-center justify-center text-white font-bold px-4 pointer-events-none text-3xl text-center md:text-4xl lg:text-7xl">
+    <>
+      <div className="absolute bg-gradient-to-b from-purple-100 via-white to-purple-100 z-50 inset-0 flex items-center justify-center text-white font-bold px-4 pointer-events-none text-3xl text-center md:text-4xl lg:text-7xl">
         <div className="mt-8 w-full px-4 md:px-8 lg:px-16">
           {/* Interactive container for buttons */}
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center mt-8 pointer-events-auto">
@@ -26,7 +25,7 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </BackgroundGradientAnimation>
+    </>
   );
 };
 
