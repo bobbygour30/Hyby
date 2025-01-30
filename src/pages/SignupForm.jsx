@@ -11,13 +11,13 @@ export function SignupForm() {
   const [formData, setFormData] = useState({
     brandName: "",
     fullName: "",
-    phoneNumber: "",
+    phone: "",
+    email: "",
     password: "",
     confirmPassword: "",
     aboutCompany: "",
     category: "",
     gstCin: "",
-    instagramUsername: "",
     youtubeLink: "",
     facebookLink: "",
   });
@@ -62,19 +62,21 @@ export function SignupForm() {
     const payload = {
       user_id: randomUserId,
       username: userType === "brand" ? formData.brandName : formData.fullName,
-      phoneNumber: formData.phoneNumber,
+      phone: formData.phone,
+      email: formData.email,
       password: formData.password,
       social_media:
         userType === "influencer"
           ? {
-              instagram: formData.instagramUsername,
               youtube: formData.youtubeLink,
               facebook: formData.facebookLink,
             }
           : {},
-      reffered_by: randomReferredBy,
+      referred_by: randomReferredBy,
       status: false,
     };
+
+    console.log(payload);
 
     setIsLoading(true);
     try {
@@ -94,19 +96,18 @@ export function SignupForm() {
       const data = await response.json();
       console.log("Form submitted successfully:", data);
       alert("Signup successful!");
-
       navigate("/login");
 
       setFormData({
         brandName: "",
         fullName: "",
-        phoneNumber: "",
+        phone: "",
+        email: "",
         password: "",
         confirmPassword: "",
         aboutCompany: "",
         category: "",
         gstCin: "",
-        instagramUsername: "",
         youtubeLink: "",
         facebookLink: "",
       });
@@ -187,7 +188,10 @@ export function SignupForm() {
               />
             </div>
             <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-black">
+              <label
+                htmlFor="email"
+                className="block mb-2 text-sm font-medium text-black"
+              >
                 Email
               </label>
               <input
@@ -311,22 +315,23 @@ export function SignupForm() {
             </div>
             <div>
               <label
-                htmlFor="instagramUsername"
-                className="block mb-2 text-sm font-medium text-black"
+                htmlFor="email"
+                className="block text-sm font-medium text-black"
               >
-                Instagram Username
+                Email
               </label>
               <input
-                id="instagramUsername"
-                name="instagramUsername"
-                type="text"
-                placeholder="jasmine_bhandari_4567"
+                id="email"
+                name="email"
+                type="email"
+                placeholder="example@domain.com"
                 className="w-full p-2 rounded-full bg-gray-200 text-black"
-                value={formData.instagramUsername}
+                value={formData.email}
                 onChange={handleInputChange}
                 required
               />
             </div>
+
             <div>
               <label
                 htmlFor="phoneNumber"
@@ -335,12 +340,12 @@ export function SignupForm() {
                 Mobile Number
               </label>
               <input
-                id="phoneNumber"
-                name="phoneNumber"
+                id="phone"
+                name="phone" // ✅ Matches `formData.phone`
                 type="tel"
-                placeholder="9876543210"
+                placeholder="80 766 12345"
                 className="w-full p-2 rounded-full bg-gray-200 text-black"
-                value={formData.phoneNumber}
+                value={formData.phone} // ✅ Matches the state variable
                 onChange={handleInputChange}
                 required
               />
