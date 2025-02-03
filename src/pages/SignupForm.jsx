@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { BackgroundGradientAnimation } from "../components/ui/background-gradient-animation";
 import assets from "../assets/assets";
 import { Button } from "../components/Button";
 import { Eye, EyeOff } from "lucide-react";
@@ -42,11 +41,8 @@ export function SignupForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const randomUserId = Math.floor(Math.random() * 1000) + 1;
-    const randomReferredBy = Math.floor(Math.random() * 1000) + 1;
-
+    // Password validation
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-
     if (!passwordRegex.test(formData.password)) {
       alert(
         "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
@@ -58,6 +54,10 @@ export function SignupForm() {
       alert("Passwords do not match!");
       return;
     }
+
+    // Generate random IDs
+    const randomUserId = Math.floor(Math.random() * 1000) + 1;
+    const randomReferredBy = Math.floor(Math.random() * 1000) + 1;
 
     const payload = {
       user_id: randomUserId,
@@ -76,7 +76,7 @@ export function SignupForm() {
       status: false,
     };
 
-    console.log(payload);
+    console.log("Submitting Payload:", payload);
 
     setIsLoading(true);
     try {
@@ -88,15 +88,15 @@ export function SignupForm() {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.detail || "Failed to submit the form.");
-      }
-
       const data = await response.json();
-      console.log("Form submitted successfully:", data);
-      alert("Signup successful!");
-      navigate("/login");
+      console.log("API Response:", data);
+
+      if (response.ok && (data.success || data.message === "User added successfully")) {
+        alert("Signup successful!");
+        navigate("/login");
+      } else {
+        throw new Error(data.message || "Signup failed");
+      }
 
       setFormData({
         brandName: "",
@@ -121,8 +121,6 @@ export function SignupForm() {
 
   return (
     <div className="min-h-screen relative bg-gradient-to-b from-purple-100 via-white to-purple-100">
-      {/* <BackgroundGradientAnimation containerClassName="absolute inset-0 z-0 h-full" /> */}
-
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen w-full max-w-md mx-auto p-6 rounded-3xl text-white">
         <div className="flex items-center justify-center mb-6">
           <div className="flex rounded-full bg-gray-800 p-1">
@@ -213,17 +211,17 @@ export function SignupForm() {
                 Mobile Number
               </label>
               <div className="flex gap-2">
-                <div className="flex bg-gray-200 text-black  rounded-full items-center px-3 w-20">
+                <div className="flex bg-gray-200 text-black rounded-full items-center px-3 w-20">
                   <img src={assets.Flag} alt="IN" className="mr-1 w-4 h-4" />
                   <span>+91</span>
                 </div>
                 <input
                   id="phoneNumber"
-                  name="phoneNumber"
+                  name="phone" // ✅ Corrected from "phoneNumber"
                   type="tel"
                   placeholder="80 766 12345"
                   className="flex-1 p-2 rounded-full bg-gray-200 text-black"
-                  value={formData.phoneNumber}
+                  value={formData.phone} // ✅ Matches formData.phone
                   onChange={handleInputChange}
                   required
                 />

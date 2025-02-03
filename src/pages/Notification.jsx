@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 
 const Notifications = () => {
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-5xl mx-auto">
       <Navbar />
       <div>
         <div className="p-4">

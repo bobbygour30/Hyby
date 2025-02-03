@@ -63,7 +63,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <section className="p-4 bg-gradient-to-b from-gray-100 to-purple-100">
+      <section className="p-4 bg-gradient-to-b from-gray-100 to-purple-100 w-full">
         <h1 className="text-3xl text-center font-semibold">
           Popular Influencer
         </h1>

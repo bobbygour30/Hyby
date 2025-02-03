@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { FaInstagram, FaYoutube, FaFacebook, FaSignOutAlt } from "react-icons/fa"; // Import FaSignOutAlt for the logout icon
 import Navbar from "../components/Navbar";
 import assets from "../assets/assets";
-import { FaInstagram, FaYoutube, FaFacebook } from "react-icons/fa";
 import SelectCreator from "../components/SelectCreator";
 
 const Profile = () => {
   const [likes, setLikes] = useState([0, 0, 0]); // Manage like counts for each card
   const [liked, setLiked] = useState([false, false, false]);
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  // Check authentication status on component mount
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+    if (!isAuthenticated) {
+      navigate("/login"); // Redirect to login if not authenticated
+    }
+  }, [navigate]);
 
   const influencers = [
     {
@@ -25,6 +35,7 @@ const Profile = () => {
       image: `${assets.influencer3}`,
     },
   ];
+
   const toggleLike = (index) => {
     const newLiked = [...liked];
     const newLikes = [...likes];
@@ -35,9 +46,17 @@ const Profile = () => {
     setLiked(newLiked);
     setLikes(newLikes);
   };
+
+  const handleLogout = () => {
+    // Clear authentication state
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("user");
+    navigate("/login"); // Redirect to the /login route
+  };
+
   return (
     <>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <Navbar />
         <div>
           <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mt-1">
@@ -143,8 +162,15 @@ const Profile = () => {
             ))}
           </div>
         </div>
-        <div className="fixed bottom-0 w-full rounded-lg bg-purple-100 p-4 shadow-md max-w-3xl mx-auto">
+        <div className="fixed bottom-0 w-full rounded-lg bg-purple-100 p-4 shadow-md max-w-5xl mx-auto">
           <SelectCreator />
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center w-full bg-red-500 text-white py-2 rounded-lg mt-2 hover:bg-red-600 transition-colors"
+          >
+            <FaSignOutAlt className="mr-2" /> Logout
+          </button>
         </div>
       </div>
     </>

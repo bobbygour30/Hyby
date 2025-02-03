@@ -62,7 +62,7 @@ const Projects = () => {
 
   return (
     <>
-      <div className="container mx-auto max-w-3xl ">
+      <div className="container mx-auto max-w-5xl ">
         <Navbar />
         <div className="flex flex-col justify-center items-center bg-gradient-to-b from-gray-100 to-purple-100 w-full">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 leading-relaxed">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "../components/Button";
@@ -11,11 +11,18 @@ export function Login() {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const navigate = useNavigate();
 
+  // Check authentication status on component mount
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+    if (isAuthenticated) {
+      navigate("/profile");
+    }
+  }, [navigate]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  
 
   const togglePasswordVisibility = () => {
     setPasswordVisibility((prev) => !prev);
@@ -36,40 +43,37 @@ export function Login() {
     }
 
     try {
-      const response = await fetch(`http://75.119.146.185:4444/api/get_byphone/${formData.phone}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log(response);
-      
+      const response = await fetch(
+        `http://75.119.146.185:4444/api/get_byphone/${formData.phone}`,
+        { method: "GET" }
+      );
 
       if (!response.ok) {
         throw new Error("User not found");
       }
 
       const user = await response.json();
-      console.log(user);
-      
 
       if (user && user.password === formData.password) {
+        // Store authentication state
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("user", JSON.stringify(user));
+        
         alert("Login successful!");
-        navigate("/influencer");
+        navigate("/profile");
       } else {
         setErrorMessage("Invalid phone number or password.");
       }
     } catch (error) {
       console.error("Error fetching user:", error);
-      if (error.response && error.response.status === 422) {
-        setErrorMessage("Invalid input. Please check your phone number and password.");
-      } else {
-        setErrorMessage("Invalid phone number or password.");
-      }
+      setErrorMessage("Invalid phone number or password.");
     } finally {
       setLoading(false);
     }
   };
+
+  
+  
 
   return (
     <div className="min-h-screen relative bg-gradient-to-b from-purple-100 via-white to-purple-100">

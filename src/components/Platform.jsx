@@ -86,15 +86,18 @@ const Platform = () => {
 
   const sliderSettings = {
     dots: false,
-    infinite: true,
-    speed: 500,
+    infinite: true, // Enables infinite loop
+    speed: 800, // Smooth scrolling speed
     slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToScroll: 1, // Always move one slide at a time for a smoother effect
+    cssEase: "linear", // Makes sliding feel continuous
+    
+    pauseOnHover: false, // Prevent stopping on hover
     responsive: [
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: 3, // Show 3 cards on small screens
+          slidesToShow: 3,
           slidesToScroll: 1,
         },
       },
@@ -112,7 +115,7 @@ const Platform = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4">
+    <div className="max-w-5xl mx-auto px-4">
       <h1 className="text-3xl text-center font-semibold mt-4">Platform</h1>
       <div className="overflow-x-auto flex items-center justify-center mt-4 mb-4">
         <div className="flex gap-2 w-full lg:justify-center">
@@ -134,7 +137,8 @@ const Platform = () => {
 
       <Slider {...sliderSettings}>
         {cards.map((card) => (
-          <div key={card.id} className="p-2 md:p-4">
+          <div key={card.id} className="px-1 md:px-2 lg:px-1">
+
             <div className="bg-white shadow-lg rounded-lg overflow-hidden relative md:scale-100 sm:scale-90 sm:max-w-xs mx-auto transition-transform">
               <img
                 src={card.image}

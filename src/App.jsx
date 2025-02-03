@@ -11,6 +11,8 @@ import Share from "./pages/Share";
 import { Login } from "./pages/Login";
 import { SignupForm } from "./pages/SignupForm";
 import Notifications from "./pages/Notification";
+import Profile from "./pages/Profile";
+import ProfileInfo from "./pages/ProfileInfo";
 
 // LoadingScreen Component: Displayed while the app is loading
 const LoadingScreen = () => {
@@ -64,7 +66,9 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignupForm />} />
           <Route path="/share" element={<Share />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/profileinfo" element={<ProfileInfo />} />
         </Routes>
       )}
     </>

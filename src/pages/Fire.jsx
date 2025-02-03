@@ -5,10 +5,10 @@ import Footer from "../components/Footer";
 const Fire = () => {
   return (
     <>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <Navbar />
       </div>
-      <div className="bg-gradient-to-b from-purple-100 via-white to-purple-100 container mx-auto max-w-3xl px-6 py-12 min-h-screen flex flex-col items-center">
+      <div className="bg-gradient-to-b from-purple-100 via-white to-purple-100 container mx-auto max-w-5xl px-6 py-12 min-h-screen flex flex-col items-center">
         {/* Reward Section */}
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 leading-relaxed">
           You Have <span className="text-orange-500">10</span> Free Fires By

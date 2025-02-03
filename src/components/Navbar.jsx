@@ -10,7 +10,7 @@ const Navbar = () => {
 
   return (
     <div className="bg-gray-100 shadow-md">
-      <div className="container mx-auto max-w-4xl flex items-center justify-between p-4">
+      <div className="container mx-auto max-w-5xl flex items-center justify-between p-4">
         {/* Search Bar */}
         <div className="flex items-center bg-white rounded-full shadow-sm px-4 py-2 w-full max-w-md">
           <input

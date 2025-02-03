@@ -35,7 +35,7 @@ const Share = () => {
 
   return (
     <>
-      <div className="max-w-3xl mx-auto  ">
+      <div className="max-w-5xl mx-auto  ">
         <Navbar />
         <div className="bg-gradient-to-b from-purple-100 via-white to-purple-100 p-4 rounded-lg shadow-md w-full mx-auto ">
           {/* Manager and Inviter Info */}

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark, FaHome } from "react-icons/fa"; // Import FaHome for the home icon
 
 const SelectCreator = () => {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const toggleLike = () => {
     setLiked(!liked);
@@ -13,8 +15,20 @@ const SelectCreator = () => {
     setSaved(!saved);
   };
 
+  const handleHomeClick = () => {
+    navigate("/influencer"); // Redirect to /influencer route
+  };
+
   return (
-    <div className="flex items-center justify-evenly gap-4">
+    <div className="flex items-center justify-evenly gap-4 ">
+      {/* Home Button */}
+      <button
+        onClick={handleHomeClick}
+        className="text-2xl text-gray-800 focus:outline-none hover:text-blue-500 transition-colors"
+      >
+        <FaHome />
+      </button>
+
       {/* Like Button */}
       <div className="flex gap-4">
         <button
