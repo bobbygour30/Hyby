@@ -14,9 +14,11 @@ const Profile = () => {
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated");
     if (!isAuthenticated) {
-      navigate("/login"); // Redirect to login if not authenticated
+      navigate("/login", { replace: true }); // Prevents unnecessary history entries
     }
   }, [navigate]);
+  
+  
 
   const influencers = [
     {

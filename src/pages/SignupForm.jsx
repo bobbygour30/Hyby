@@ -55,32 +55,18 @@ export function SignupForm() {
       return;
     }
 
-    // Generate random IDs
-    const randomUserId = Math.floor(Math.random() * 1000) + 1;
-    const randomReferredBy = Math.floor(Math.random() * 1000) + 1;
-
     const payload = {
-      user_id: randomUserId,
-      username: userType === "brand" ? formData.brandName : formData.fullName,
       phone: formData.phone,
       email: formData.email,
       password: formData.password,
-      social_media:
-        userType === "influencer"
-          ? {
-              youtube: formData.youtubeLink,
-              facebook: formData.facebookLink,
-            }
-          : {},
-      referred_by: randomReferredBy,
-      status: false,
+      reffered_by: "1234567890", // Replace with actual referral code if available
     };
 
     console.log("Submitting Payload:", payload);
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://75.119.146.185:4444/api/adduser", {
+      const response = await fetch("http://75.119.146.185:4444/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -91,11 +77,11 @@ export function SignupForm() {
       const data = await response.json();
       console.log("API Response:", data);
 
-      if (response.ok && (data.success || data.message === "User added successfully")) {
+      if (response.ok) {
         alert("Signup successful!");
         navigate("/login");
       } else {
-        throw new Error(data.message || "Signup failed");
+        throw new Error(data.detail?.[0]?.msg || "Signup failed");
       }
 
       setFormData({

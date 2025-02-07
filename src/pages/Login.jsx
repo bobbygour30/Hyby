@@ -13,11 +13,11 @@ export function Login() {
 
   // Check authentication status on component mount
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
-    if (isAuthenticated) {
+    const token = localStorage.getItem("access_token");
+    if (token) {
       navigate("/profile");
     }
-  }, [navigate]);
+  }, [navigate]); // Added navigate to dependency array
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -43,37 +43,32 @@ export function Login() {
     }
 
     try {
-      const response = await fetch(
-        `http://75.119.146.185:4444/api/get_byphone/${formData.phone}`,
-        { method: "GET" }
-      );
+      // Removed email from URL and fixed extra spaces
+      const response = await fetch(`http://75.119.146.185:4444/login?phone=${formData.phone}&password=${formData.password}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: formData.phone,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error("User not found");
+        throw new Error(data.detail?.[0]?.msg || "Invalid phone number or password.");
       }
 
-      const user = await response.json();
-
-      if (user && user.password === formData.password) {
-        // Store authentication state
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("user", JSON.stringify(user));
-        
-        alert("Login successful!");
-        navigate("/profile");
-      } else {
-        setErrorMessage("Invalid phone number or password.");
-      }
+      localStorage.setItem("access_token", data.access_token);
+      alert("Login successful!");
+      navigate("/profile");
     } catch (error) {
-      console.error("Error fetching user:", error);
-      setErrorMessage("Invalid phone number or password.");
+      console.error("Login error:", error);
+      setErrorMessage(error.message || "Failed to login. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
-  
-  
 
   return (
     <div className="min-h-screen relative bg-gradient-to-b from-purple-100 via-white to-purple-100">
