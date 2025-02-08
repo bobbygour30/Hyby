@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef  } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Edit2, Trash2 } from "lucide-react";
 
@@ -7,87 +7,75 @@ const ProfileInfo = () => {
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState({});
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
-  // Fetch user data when the component mounts
+  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
-      const token = localStorage.getItem("access_token"); // Retrieve token from localStorage
+      const token = localStorage.getItem("access_token");
+
       if (!token) {
-        console.error("No token found!");
+        console.error("No token found! Redirecting to login.");
+        navigate("/login");
         return;
       }
-  
+
       try {
         const response = await fetch("http://75.119.146.185:4444/user/me", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`, // Add token
+            Authorization: `Bearer ${token}`,
           },
         });
-  
+
+        if (response.status === 401) {
+          console.error("Unauthorized! Token may be invalid or expired.");
+          localStorage.removeItem("access_token");
+          navigate("/login");
+          return;
+        }
+
         if (!response.ok) throw new Error("Failed to fetch user data");
+
         const data = await response.json();
         setUser(data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching user data:", error);
       }
     };
-  
+
     fetchUserData();
-  }, []);
-  
+  }, [navigate]);
 
-  // Handle profile image upload
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUser((prev) => ({ ...prev, profile_pic: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleDeleteImage = () => {
-    setUser((prev) => ({ ...prev, profile_pic: "" }));
-  };
-
-  const toggleEditMode = (field) => {
-    setEditMode((prev) => ({ ...prev, [field]: !prev[field] }));
-  };
-
-  // Handle form submission (update user)
-  const navigate = useNavigate(); // Initialize useNavigate
-
+  // Handle form submission
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
-    const token = localStorage.getItem("access_token"); // Retrieve token
-  
+
+    const token = localStorage.getItem("access_token");
+
     const updatedData = {
       name: user.name,
-      profile_pic: user.profile_pic, // Ensure this is a URL, not base64
+      profile_pic: user.profile_pic,
       social_media: user.social_media,
     };
-  
+
     try {
       const response = await fetch("http://75.119.146.185:4444/user/me", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Include token
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(updatedData),
       });
-  
+
       if (!response.ok) throw new Error("Failed to update profile");
-  
+
       const updatedUser = await response.json();
-      setUser(updatedUser);
-      navigate("/profile", { replace: true });
+      setUser(updatedUser); // Update state with new data
+      navigate("/profile", { replace: true }); // Navigate without reloading
     } catch (error) {
       console.error(error);
     } finally {
@@ -96,7 +84,6 @@ const ProfileInfo = () => {
     }
   };
   
-
   if (!user) return <div className="text-center py-10">Loading...</div>;
 
   return (
@@ -151,7 +138,10 @@ const ProfileInfo = () => {
                   { id: "email", label: "Your Email", value: user.email },
                 ].map((field) => (
                   <div key={field.id}>
-                    <label htmlFor={field.id} className="block mb-2 font-medium">
+                    <label
+                      htmlFor={field.id}
+                      className="block mb-2 font-medium"
+                    >
                       {field.label}
                     </label>
                     <div className="relative">
@@ -161,7 +151,10 @@ const ProfileInfo = () => {
                         type="text"
                         value={user[field.id] || ""}
                         onChange={(e) =>
-                          setUser((prev) => ({ ...prev, [field.id]: e.target.value }))
+                          setUser((prev) => ({
+                            ...prev,
+                            [field.id]: e.target.value,
+                          }))
                         }
                         className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
                         readOnly={!editMode[field.id]}
@@ -171,7 +164,11 @@ const ProfileInfo = () => {
                         onClick={() => toggleEditMode(field.id)}
                         className="absolute right-3 top-2.5 text-green-500 hover:text-green-600"
                       >
-                        {editMode[field.id] ? <span className="text-sm">Save</span> : <Edit2 className="h-5 w-5" />}
+                        {editMode[field.id] ? (
+                          <span className="text-sm">Save</span>
+                        ) : (
+                          <Edit2 className="h-5 w-5" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -181,31 +178,42 @@ const ProfileInfo = () => {
               <div className="pt-4">
                 <h2 className="text-lg font-medium mb-4">Social Media</h2>
                 <div className="space-y-4">
-                  {Object.entries(user.social_media || {}).map(([key, value]) => (
-                    <div key={key}>
-                      <label className="block mb-2 font-medium capitalize">{key}</label>
-                      <div className="relative">
-                        <input
-                          name={key}
-                          value={value || ""}
-                          onChange={(e) =>
-                            setUser((prev) => ({
-                              ...prev,
-                              social_media: { ...prev.social_media, [key]: e.target.value },
-                            }))
-                          }
-                          className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => toggleEditMode(key)}
-                          className="absolute right-3 top-2.5 text-green-500 hover:text-green-600"
-                        >
-                          {editMode[key] ? <span className="text-sm">Save</span> : <Edit2 className="h-5 w-5" />}
-                        </button>
+                  {Object.entries(user.social_media || {}).map(
+                    ([key, value]) => (
+                      <div key={key}>
+                        <label className="block mb-2 font-medium capitalize">
+                          {key}
+                        </label>
+                        <div className="relative">
+                          <input
+                            name={key}
+                            value={value || ""}
+                            onChange={(e) =>
+                              setUser((prev) => ({
+                                ...prev,
+                                social_media: {
+                                  ...prev.social_media,
+                                  [key]: e.target.value,
+                                },
+                              }))
+                            }
+                            className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => toggleEditMode(key)}
+                            className="absolute right-3 top-2.5 text-green-500 hover:text-green-600"
+                          >
+                            {editMode[key] ? (
+                              <span className="text-sm">Save</span>
+                            ) : (
+                              <Edit2 className="h-5 w-5" />
+                            )}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </div>
             </div>

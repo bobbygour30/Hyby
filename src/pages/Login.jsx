@@ -15,9 +15,9 @@ export function Login() {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
-      navigate("/profileinfo");
+      navigate("/profile");
     }
-  }, [navigate]); // Added navigate to dependency array
+  }, []); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
