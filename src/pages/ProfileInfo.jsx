@@ -48,6 +48,31 @@ const ProfileInfo = () => {
     fetchUserData();
   }, [navigate]);
 
+  const handleDeleteImage = () => {
+    setUser((prev) => ({
+      ...prev,
+      profile_pic: "", // Removing the profile picture
+    }));
+  };
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setUser((prev) => ({
+        ...prev,
+        profile_pic: imageUrl,
+      }));
+    }
+  };
+  const toggleEditMode = (field) => {
+    setEditMode((prev) => ({
+      ...prev,
+      [field]: !prev[field], // Toggle the edit mode for the specific field
+    }));
+  };
+  
+
   // Handle form submission
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -83,7 +108,7 @@ const ProfileInfo = () => {
       setEditMode({});
     }
   };
-  
+
   if (!user) return <div className="text-center py-10">Loading...</div>;
 
   return (
@@ -121,14 +146,15 @@ const ProfileInfo = () => {
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    accept="image/*"
+                  />
                 </div>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  accept="image/*"
-                />
               </div>
 
               <div className="space-y-4">
