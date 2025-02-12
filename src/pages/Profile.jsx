@@ -44,6 +44,8 @@ const Profile = () => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const data = await response.json();
+        console.log(data);
+
         setUser(data);
       } catch (error) {
         console.error(error);
@@ -79,16 +81,18 @@ const Profile = () => {
           </div>
           <div>
             <h2 className="mt-4 text-lg sm:text-2xl font-bold text-gray-800">
-              {user.name} ({user.age})
+              {user.name}
             </h2>
             <p className="text-gray-600 text-sm sm:text-base">
               {user.location}
             </p>
             <p>
-              <strong>Category:</strong> {user.category}
+              <strong>Category:</strong>{" "}
+              {user.categories?.join(", ") || "Not specified"}
             </p>
             <p>
-              <strong>Language:</strong> {user.language}
+              <strong>Language:</strong>{" "}
+              {user.languages?.join(", ") || "Not specified"}
             </p>
             <p className="text-red-500">
               Total Projects:{" "}

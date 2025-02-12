@@ -17,8 +17,6 @@ export function SignupForm() {
     aboutCompany: "",
     category: "",
     gstCin: "",
-    youtubeLink: "",
-    facebookLink: "",
   });
   const [passwordVisibility, setPasswordVisibility] = useState({
     password: false,
@@ -94,8 +92,6 @@ export function SignupForm() {
         aboutCompany: "",
         category: "",
         gstCin: "",
-        youtubeLink: "",
-        facebookLink: "",
       });
     } catch (error) {
       console.error("Error submitting the form:", error);
@@ -389,40 +385,7 @@ export function SignupForm() {
                 </span>
               </div>
             </div>
-            <div>
-              <label
-                htmlFor="youtubeLink"
-                className="block mb-2 text-sm font-medium text-black"
-              >
-                YouTube Channel URL
-              </label>
-              <input
-                id="youtubeLink"
-                name="youtubeLink"
-                type="url"
-                placeholder="https://youtube.com/channel/xyz"
-                className="w-full p-2 rounded-full bg-gray-200 text-black"
-                value={formData.youtubeLink}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="facebookLink"
-                className="block mb-2 text-sm font-medium text-black"
-              >
-                Facebook Profile/Business Page URL
-              </label>
-              <input
-                id="facebookLink"
-                name="facebookLink"
-                type="url"
-                placeholder="https://facebook.com/yourname"
-                className="w-full p-2 rounded-full bg-gray-200 text-black"
-                value={formData.facebookLink}
-                onChange={handleInputChange}
-              />
-            </div>
+
             <Button
               type="submit"
               className="w-full rounded-full bg-gray-900 hover:bg-gray-800 text-white py-2"

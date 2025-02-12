@@ -2,8 +2,29 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Edit2, Trash2 } from "lucide-react";
 
+const categories = ["Technology", "Education", "Entertainment", "Business", "Other"];
+const languages = [
+  { name: "Hindi", nativeName: "हिन्दी" },
+  { name: "English", nativeName: "English" },
+  { name: "Marathi", nativeName: "मराठी" },
+  { name: "Bhojpuri", nativeName: "भोजपुरी" },
+  { name: "Kannad", nativeName: "ಕನ್ನಡ" },
+  { name: "Haryanvi", nativeName: "ਹਰਿਆਣਵੀ" },
+  { name: "Telugu", nativeName: "తెలుగు" },
+  { name: "Other", nativeName: "Other" },
+];
+
 const ProfileInfo = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    profile_pic: "",
+    categories: [], // Changed from "" to []
+    languages: [],  // Changed from "" to []
+    social_media: {},
+  });
+  
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState({});
   const fileInputRef = useRef(null);
@@ -65,13 +86,13 @@ const ProfileInfo = () => {
       }));
     }
   };
+
   const toggleEditMode = (field) => {
     setEditMode((prev) => ({
       ...prev,
       [field]: !prev[field], // Toggle the edit mode for the specific field
     }));
   };
-  
 
   // Handle form submission
   const onSubmit = async (e) => {
@@ -84,6 +105,8 @@ const ProfileInfo = () => {
       name: user.name,
       profile_pic: user.profile_pic,
       social_media: user.social_media,
+      categories: user.categories, // Ensure this is an array
+      languages: user.languages,   // Ensure this is an array
     };
 
     try {
@@ -202,44 +225,126 @@ const ProfileInfo = () => {
               </div>
 
               <div className="pt-4">
+                <h2 className="text-lg font-medium mb-4">Categories</h2>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block mb-2 font-medium">Categories</label>
+                    <div className="relative">
+                      <select
+                        name="categories"
+                        value={user.categories || ""}
+                        onChange={(e) =>
+                          setUser((prev) => ({
+                            ...prev,
+                            categories: e.target.value,
+                          }))
+                        }
+                        className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500"
+                      >
+                        <option value="">Select a category</option>
+                        {categories.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => toggleEditMode("categories")}
+                        className="absolute right-3 top-2.5 text-green-500 hover:text-green-600"
+                      >
+                        {editMode["categories"] ? (
+                          <span className="text-sm">Save</span>
+                        ) : (
+                          <Edit2 className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block mb-2 font-medium">Languages</label>
+                    <div className="relative">
+                      <select
+                        name="languages"
+                        value={user.languages || ""}
+                        onChange={(e) =>
+                          setUser((prev) => ({
+                            ...prev,
+                            languages: e.target.value,
+                          }))
+                        }
+                        className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500"
+                      >
+                        <option value="">Select a language</option>
+                        {languages.map((language) => (
+                          <option key={language.name} value={language.name}>
+                            {language.name} ({language.nativeName})
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => toggleEditMode("languages")}
+                        className="absolute right-3 top-2.5 text-green-500 hover:text-green-600"
+                      >
+                        {editMode["languages"] ? (
+                          <span className="text-sm">Save</span>
+                        ) : (
+                          <Edit2 className="h-5 w-5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4">
                 <h2 className="text-lg font-medium mb-4">Social Media</h2>
                 <div className="space-y-4">
-                  {Object.entries(user.social_media || {}).map(
-                    ([key, value]) => (
-                      <div key={key}>
-                        <label className="block mb-2 font-medium capitalize">
-                          {key}
-                        </label>
-                        <div className="relative">
-                          <input
-                            name={key}
-                            value={value || ""}
-                            onChange={(e) =>
-                              setUser((prev) => ({
-                                ...prev,
-                                social_media: {
-                                  ...prev.social_media,
-                                  [key]: e.target.value,
-                                },
-                              }))
-                            }
-                            className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => toggleEditMode(key)}
-                            className="absolute right-3 top-2.5 text-green-500 hover:text-green-600"
-                          >
-                            {editMode[key] ? (
-                              <span className="text-sm">Save</span>
-                            ) : (
-                              <Edit2 className="h-5 w-5" />
-                            )}
-                          </button>
-                        </div>
+                  {[
+                    { id: "youtube", label: "YouTube", placeholder: "https://www.youtube.com/yourchannel" },
+                    { id: "instagram", label: "Instagram", placeholder: "https://www.instagram.com/yourusername" },
+                    { id: "facebook", label: "Facebook", placeholder: "https://www.facebook.com/yourprofile" },
+                  ].map((social) => (
+                    <div key={social.id}>
+                      <label className="block mb-2 font-medium">
+                        {social.label}
+                      </label>
+                      <div className="relative">
+                        <input
+                          name={social.id}
+                          value={user.social_media?.[social.id] || ""}
+                          onChange={(e) =>
+                            setUser((prev) => ({
+                              ...prev,
+                              social_media: {
+                                ...prev.social_media,
+                                [social.id]: e.target.value,
+                              },
+                            }))
+                          }
+                          placeholder={social.placeholder}
+                          className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => toggleEditMode(social.id)}
+                          className="absolute right-3 top-2.5 text-green-500 hover:text-green-600"
+                        >
+                          {editMode[social.id] ? (
+                            <span className="text-sm">Save</span>
+                          ) : (
+                            <Edit2 className="h-5 w-5" />
+                          )}
+                        </button>
                       </div>
-                    )
-                  )}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -247,12 +352,13 @@ const ProfileInfo = () => {
             <div className="flex flex-col sm:flex-row gap-4 p-4 sm:p-6 bg-gray-50 rounded-b-lg">
               <button
                 type="button"
-                onClick={() => setEditMode({})}
+                onClick={() => navigate("/profile")}
                 className="flex-1 bg-red-500 text-white p-2 rounded-lg hover:bg-red-600"
                 disabled={loading}
               >
                 Cancel
               </button>
+
               <button
                 type="submit"
                 className="flex-1 bg-yellow-500 text-white p-2 rounded-lg hover:bg-yellow-600"
