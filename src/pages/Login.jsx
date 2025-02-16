@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "../components/Button";
 import assets from "../assets/assets";
+import { useAuth } from "../Context/AuthProvider";
 
 export function Login() {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ phone: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,7 +19,7 @@ export function Login() {
     if (token) {
       navigate("/profile");
     }
-  }, []); 
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,22 +46,28 @@ export function Login() {
 
     try {
       // Removed email from URL and fixed extra spaces
-      const response = await fetch(`http://75.119.146.185:4444/login?phone=${formData.phone}&password=${formData.password}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone: formData.phone,
-          password: formData.password,
-        }),
-      });
+      const response = await fetch(
+        `http://75.119.146.185:4444/login?phone=${formData.phone}&password=${formData.password}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone: formData.phone,
+            password: formData.password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.detail?.[0]?.msg || "Invalid phone number or password.");
+        throw new Error(
+          data.detail?.[0]?.msg || "Invalid phone number or password."
+        );
       }
 
       localStorage.setItem("access_token", data.access_token);
+      login(data.access_token);
       alert("Login successful!");
       navigate("/profile");
     } catch (error) {
@@ -77,9 +85,15 @@ export function Login() {
           Welcome Back!
         </h1>
 
-        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 sm:space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-md space-y-4 sm:space-y-6"
+        >
           <div>
-            <label htmlFor="phone" className="block mb-2 text-sm font-medium text-black">
+            <label
+              htmlFor="phone"
+              className="block mb-2 text-sm font-medium text-black"
+            >
               Mobile Number
             </label>
             <div className="flex gap-2">
@@ -101,7 +115,10 @@ export function Login() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block mb-2 text-sm font-medium text-black">
+            <label
+              htmlFor="password"
+              className="block mb-2 text-sm font-medium text-black"
+            >
               Password
             </label>
             <div className="relative">
@@ -124,7 +141,9 @@ export function Login() {
             </div>
           </div>
 
-          {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+          {errorMessage && (
+            <p className="text-red-500 text-sm">{errorMessage}</p>
+          )}
 
           <Button
             type="submit"
@@ -136,7 +155,10 @@ export function Login() {
 
           <p className="text-center text-black">
             New User?{" "}
-            <button className="text-yellow-500" onClick={() => navigate("/sign-up")}>
+            <button
+              className="text-yellow-500"
+              onClick={() => navigate("/sign-up")}
+            >
               Sign Up
             </button>
           </p>

@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 const Footer = () => {
   const location = useLocation();
   const [selected, setSelected] = useState(location.pathname);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    setIsLoggedIn(!!user); // Convert to boolean
-  }, [location.pathname]); // Depend on location changes
+  const { isLoggedIn } = useAuth(); // Get login state from context
 
   const menuItems = [
     { name: "HOME", icon: "fa-home", path: "/influencer" },

@@ -13,10 +13,12 @@ import { SignupForm } from "./pages/SignupForm";
 import Notifications from "./pages/Notification";
 import Profile from "./pages/Profile";
 import ProfileInfo from "./pages/ProfileInfo";
+import { AuthProvider } from "./Context/AuthProvider";
 
 // LoadingScreen Component: Displayed while the app is loading
 const LoadingScreen = () => {
   return (
+
     <div className="w-full flex flex-col justify-center items-center min-h-screen bg-gradient-to-b from-purple-100 via-white to-purple-100">
       {/* Logo */}
       <img
@@ -54,6 +56,7 @@ const App = () => {
 
   return (
     <>
+    <AuthProvider>
       {isLoading ? (
         <LoadingScreen />
       ) : (
@@ -71,6 +74,7 @@ const App = () => {
           <Route path="/profileinfo" element={<ProfileInfo />} />
         </Routes>
       )}
+      </AuthProvider>
     </>
   );
 };

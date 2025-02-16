@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../Context/AuthProvider";
 import {
   FaInstagram,
   FaYoutube,
@@ -10,6 +11,7 @@ import Navbar from "../components/Navbar";
 import SelectCreator from "../components/SelectCreator";
 
 const Profile = () => {
+  const { logout } = useAuth();
   const navigate = useNavigate();
   const { state } = useLocation();
   const [user, setUser] = useState(state?.user || null);
@@ -59,7 +61,7 @@ const Profile = () => {
   // Add `user` as a dependency to avoid unnecessary fetch calls
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
+    logout();
     navigate("/login");
   };
 

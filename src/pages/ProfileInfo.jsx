@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Edit2, Trash2 } from "lucide-react";
 
+
 const categories = [
   "Technology",
   "Education",
@@ -21,6 +22,7 @@ const languages = [
 ];
 
 const ProfileInfo = () => {
+  
   const [user, setUser] = useState({
     name: "",
     phone: "",
@@ -134,7 +136,7 @@ const ProfileInfo = () => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        const base64String = reader.result.split(",")[1]; 
+        const base64String = reader.result.split(",")[1];
         localStorage.setItem("profile_pic", base64String);
         setUser((prev) => ({ ...prev, profile_pic: base64String }));
       };
@@ -142,7 +144,6 @@ const ProfileInfo = () => {
       console.error("Invalid file type. Please upload an image.");
     }
   };
-
 
   useEffect(() => {
     const savedPic = localStorage.getItem("profile_pic");
@@ -195,15 +196,15 @@ const ProfileInfo = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     let token = localStorage.getItem("access_token");
-  
+
     if (!checkTokenExpiration()) {
       const newToken = await refreshToken();
       if (!newToken) return;
       token = newToken;
     }
-  
+
     const dataToSend = {
       name: user.name,
       social_media: user.social_media || {},
@@ -212,24 +213,23 @@ const ProfileInfo = () => {
       languages: user.languages || [],
       categories: user.categories || [],
     };
-  
-   
+
     if (user.profile_pic) {
-      dataToSend.profile_pic = user.profile_pic; 
+      dataToSend.profile_pic = user.profile_pic;
     }
-  
+
     try {
       const response = await fetch("http://75.119.146.185:4444/user/me", {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json", 
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(dataToSend),
       });
-  
+
       if (!response.ok) throw new Error("Failed to update profile");
-  
+
       const updatedUser = await response.json();
       setUser(updatedUser);
       navigate("/profile", { replace: true });
