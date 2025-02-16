@@ -2,7 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Edit2, Trash2 } from "lucide-react";
 
-const categories = ["Technology", "Education", "Entertainment", "Business", "Other"];
+const categories = [
+  "Technology",
+  "Education",
+  "Entertainment",
+  "Business",
+  "Other",
+];
 const languages = [
   { name: "Hindi", nativeName: "हिन्दी" },
   { name: "English", nativeName: "English" },
@@ -20,94 +26,144 @@ const ProfileInfo = () => {
     phone: "",
     email: "",
     profile_pic: "",
-    categories: [], // Changed from "" to []
-    languages: [],  // Changed from "" to []
+    categories: [],
+    languages: [],
     social_media: {},
+    referred_by: "",
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState({});
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  // Fetch user data
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem("access_token");
+  const checkTokenExpiration = () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) return false;
 
-      if (!token) {
-        console.error("No token found! Redirecting to login.");
+    const tokenPayload = JSON.parse(atob(token.split(".")[1]));
+    const expirationTime = tokenPayload.exp * 1000;
+    return expirationTime > Date.now();
+  };
+
+  const refreshToken = async () => {
+    const refreshToken = localStorage.getItem("refresh_token");
+    if (!refreshToken) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://75.119.146.185:4444/auth/refresh", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      });
+
+      if (!response.ok) throw new Error("Failed to refresh token");
+
+      const data = await response.json();
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
+      return data.access_token;
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      navigate("/login");
+    }
+  };
+
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      console.error("No token found! Redirecting to login.");
+      navigate("/login");
+      return;
+    }
+
+    if (!checkTokenExpiration()) {
+      const newToken = await refreshToken();
+      if (!newToken) return;
+    }
+
+    try {
+      const response = await fetch("http://75.119.146.185:4444/user/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        console.error("Unauthorized! Token may be invalid or expired.");
+        localStorage.removeItem("access_token");
         navigate("/login");
         return;
       }
 
-      try {
-        const response = await fetch("http://75.119.146.185:4444/user/me", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      if (!response.ok) throw new Error("Failed to fetch user data");
 
-        if (response.status === 401) {
-          console.error("Unauthorized! Token may be invalid or expired.");
-          localStorage.removeItem("access_token");
-          navigate("/login");
-          return;
-        }
+      const data = await response.json();
+      setUser({
+        ...data,
+        categories: Array.isArray(data.categories) ? data.categories : [],
+        languages: Array.isArray(data.languages) ? data.languages : [],
+      });
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
-        if (!response.ok) throw new Error("Failed to fetch user data");
-
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
+  useEffect(() => {
     fetchUserData();
   }, [navigate]);
 
   const handleDeleteImage = () => {
     setUser((prev) => ({
       ...prev,
-      profile_pic: "", // Removing the profile picture
+      profile_pic: "",
     }));
   };
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setUser((prev) => ({
-        ...prev,
-        profile_pic: imageUrl,
-      }));
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        localStorage.setItem("profile_pic", reader.result);
+        setUser((prev) => ({ ...prev, profile_pic: reader.result }));
+      };
+    } else {
+      console.error("Invalid file type. Please upload an image.");
     }
   };
+
+  useEffect(() => {
+    const savedPic = localStorage.getItem("profile_pic");
+    if (savedPic) {
+      setUser((prev) => ({ ...prev, profile_pic: savedPic }));
+    }
+  }, []);
 
   const toggleEditMode = (field) => {
     setEditMode((prev) => ({
       ...prev,
-      [field]: !prev[field], // Toggle the edit mode for the specific field
+      [field]: !prev[field],
     }));
   };
 
-  // Handle form submission
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const updateUserData = async () => {
+    let token = localStorage.getItem("access_token");
 
-    const token = localStorage.getItem("access_token");
-
-    const updatedData = {
-      name: user.name,
-      profile_pic: user.profile_pic,
-      social_media: user.social_media,
-      categories: user.categories, // Ensure this is an array
-      languages: user.languages,   // Ensure this is an array
-    };
+    if (!checkTokenExpiration()) {
+      const newToken = await refreshToken();
+      if (!newToken) return;
+      token = newToken;
+    }
 
     try {
       const response = await fetch("http://75.119.146.185:4444/user/me", {
@@ -116,14 +172,61 @@ const ProfileInfo = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(updatedData),
+        body: JSON.stringify({
+          name: user.name,
+          social_media: user.social_media,
+          referred_by: user.referred_by,
+          languages: user.languages,
+          categories: user.categories,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update user data");
+
+      const data = await response.json();
+      console.log("Success:", data);
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const token = localStorage.getItem("access_token");
+
+    if (!checkTokenExpiration()) {
+      const newToken = await refreshToken();
+      if (!newToken) return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", user.name);
+    formData.append("social_media", JSON.stringify(user.social_media || {}));
+    formData.append("social_media_verified", "true");
+    formData.append("referred_by", user.referred_by || "");
+    formData.append("languages", JSON.stringify(user.languages || []));
+    formData.append("categories", JSON.stringify(user.categories || []));
+
+    if (fileInputRef.current.files[0]) {
+      formData.append("profile_pic", fileInputRef.current.files[0]);
+    }
+
+    try {
+      const response = await fetch("http://75.119.146.185:4444/user/me", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
       });
 
       if (!response.ok) throw new Error("Failed to update profile");
 
       const updatedUser = await response.json();
-      setUser(updatedUser); // Update state with new data
-      navigate("/profile", { replace: true }); // Navigate without reloading
+      setUser(updatedUser);
+      navigate("/profile", { replace: true });
     } catch (error) {
       console.error(error);
     } finally {
@@ -232,14 +335,13 @@ const ProfileInfo = () => {
                     <div className="relative">
                       <select
                         name="categories"
-                        value={user.categories || ""}
+                        value={user.categories?.[0] || ""}
                         onChange={(e) =>
                           setUser((prev) => ({
                             ...prev,
-                            categories: e.target.value,
+                            categories: [e.target.value],
                           }))
                         }
-                        className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500"
                       >
                         <option value="">Select a category</option>
                         {categories.map((category) => (
@@ -248,6 +350,7 @@ const ProfileInfo = () => {
                           </option>
                         ))}
                       </select>
+
                       <button
                         type="button"
                         onClick={() => toggleEditMode("categories")}
@@ -271,14 +374,13 @@ const ProfileInfo = () => {
                     <div className="relative">
                       <select
                         name="languages"
-                        value={user.languages || ""}
+                        value={user.languages?.[0] || ""}
                         onChange={(e) =>
                           setUser((prev) => ({
                             ...prev,
-                            languages: e.target.value,
+                            languages: [e.target.value],
                           }))
                         }
-                        className="w-full p-2 border rounded-lg pr-10 focus:ring-2 focus:ring-yellow-500"
                       >
                         <option value="">Select a language</option>
                         {languages.map((language) => (
@@ -287,6 +389,7 @@ const ProfileInfo = () => {
                           </option>
                         ))}
                       </select>
+
                       <button
                         type="button"
                         onClick={() => toggleEditMode("languages")}
@@ -307,9 +410,21 @@ const ProfileInfo = () => {
                 <h2 className="text-lg font-medium mb-4">Social Media</h2>
                 <div className="space-y-4">
                   {[
-                    { id: "youtube", label: "YouTube", placeholder: "https://www.youtube.com/yourchannel" },
-                    { id: "instagram", label: "Instagram", placeholder: "https://www.instagram.com/yourusername" },
-                    { id: "facebook", label: "Facebook", placeholder: "https://www.facebook.com/yourprofile" },
+                    {
+                      id: "youtube",
+                      label: "YouTube",
+                      placeholder: "https://www.youtube.com/yourchannel",
+                    },
+                    {
+                      id: "instagram",
+                      label: "Instagram",
+                      placeholder: "https://www.instagram.com/yourusername",
+                    },
+                    {
+                      id: "facebook",
+                      label: "Facebook",
+                      placeholder: "https://www.facebook.com/yourprofile",
+                    },
                   ].map((social) => (
                     <div key={social.id}>
                       <label className="block mb-2 font-medium">
@@ -357,6 +472,13 @@ const ProfileInfo = () => {
                 disabled={loading}
               >
                 Cancel
+              </button>
+              <button
+                type="button"
+                onClick={updateUserData}
+                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600"
+              >
+                Update User Data
               </button>
 
               <button

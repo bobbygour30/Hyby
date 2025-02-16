@@ -9,7 +9,7 @@ const Footer = () => {
   useEffect(() => {
     const user = localStorage.getItem("user");
     setIsLoggedIn(!!user); // Convert to boolean
-  }, []);
+  }, [location.pathname]); // Depend on location changes
 
   const menuItems = [
     { name: "HOME", icon: "fa-home", path: "/influencer" },
