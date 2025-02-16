@@ -134,13 +134,15 @@ const ProfileInfo = () => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        localStorage.setItem("profile_pic", reader.result);
-        setUser((prev) => ({ ...prev, profile_pic: reader.result }));
+        const base64String = reader.result.split(",")[1]; 
+        localStorage.setItem("profile_pic", base64String);
+        setUser((prev) => ({ ...prev, profile_pic: base64String }));
       };
     } else {
       console.error("Invalid file type. Please upload an image.");
     }
   };
+
 
   useEffect(() => {
     const savedPic = localStorage.getItem("profile_pic");
@@ -193,42 +195,46 @@ const ProfileInfo = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    const token = localStorage.getItem("access_token");
-
+  
+    let token = localStorage.getItem("access_token");
+  
     if (!checkTokenExpiration()) {
       const newToken = await refreshToken();
       if (!newToken) return;
+      token = newToken;
     }
-
-    const formData = new FormData();
-    formData.append("name", user.name);
-    formData.append("social_media", JSON.stringify(user.social_media || {}));
-    formData.append("social_media_verified", "true");
-    formData.append("referred_by", user.referred_by || "");
-    formData.append("languages", JSON.stringify(user.languages || []));
-    formData.append("categories", JSON.stringify(user.categories || []));
-
-    if (fileInputRef.current.files[0]) {
-      formData.append("profile_pic", fileInputRef.current.files[0]);
+  
+    const dataToSend = {
+      name: user.name,
+      social_media: user.social_media || {},
+      social_media_verified: true,
+      referred_by: user.referred_by || "",
+      languages: user.languages || [],
+      categories: user.categories || [],
+    };
+  
+   
+    if (user.profile_pic) {
+      dataToSend.profile_pic = user.profile_pic; 
     }
-
+  
     try {
       const response = await fetch("http://75.119.146.185:4444/user/me", {
         method: "PUT",
         headers: {
+          "Content-Type": "application/json", 
           Authorization: `Bearer ${token}`,
         },
-        body: formData,
+        body: JSON.stringify(dataToSend),
       });
-
+  
       if (!response.ok) throw new Error("Failed to update profile");
-
+  
       const updatedUser = await response.json();
       setUser(updatedUser);
       navigate("/profile", { replace: true });
     } catch (error) {
-      console.error(error);
+      console.error("Error updating profile:", error);
     } finally {
       setLoading(false);
       setEditMode({});
