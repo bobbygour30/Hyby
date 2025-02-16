@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Edit2, Trash2 } from "lucide-react";
-
+import Cookies from "js-cookie"; // Import js-cookie
 
 const categories = [
   "Technology",
@@ -22,7 +22,6 @@ const languages = [
 ];
 
 const ProfileInfo = () => {
-  
   const [user, setUser] = useState({
     name: "",
     phone: "",
@@ -40,7 +39,7 @@ const ProfileInfo = () => {
   const navigate = useNavigate();
 
   const checkTokenExpiration = () => {
-    const token = localStorage.getItem("access_token");
+    const token = Cookies.get("access_token"); // Use Cookies instead of localStorage
     if (!token) return false;
 
     const tokenPayload = JSON.parse(atob(token.split(".")[1]));
@@ -49,7 +48,7 @@ const ProfileInfo = () => {
   };
 
   const refreshToken = async () => {
-    const refreshToken = localStorage.getItem("refresh_token");
+    const refreshToken = Cookies.get("refresh_token"); // Use Cookies instead of localStorage
     if (!refreshToken) {
       navigate("/login");
       return;
@@ -67,8 +66,8 @@ const ProfileInfo = () => {
       if (!response.ok) throw new Error("Failed to refresh token");
 
       const data = await response.json();
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("refresh_token", data.refresh_token);
+      Cookies.set("access_token", data.access_token, { expires: 7 }); // Use Cookies instead of localStorage
+      Cookies.set("refresh_token", data.refresh_token, { expires: 7 }); // Use Cookies instead of localStorage
       return data.access_token;
     } catch (error) {
       console.error("Error refreshing token:", error);
@@ -77,7 +76,7 @@ const ProfileInfo = () => {
   };
 
   const fetchUserData = async () => {
-    const token = localStorage.getItem("access_token");
+    const token = Cookies.get("access_token"); // Use Cookies instead of localStorage
 
     if (!token) {
       console.error("No token found! Redirecting to login.");
@@ -101,7 +100,7 @@ const ProfileInfo = () => {
 
       if (response.status === 401) {
         console.error("Unauthorized! Token may be invalid or expired.");
-        localStorage.removeItem("access_token");
+        Cookies.remove("access_token"); // Use Cookies instead of localStorage
         navigate("/login");
         return;
       }
@@ -160,7 +159,7 @@ const ProfileInfo = () => {
   };
 
   const updateUserData = async () => {
-    let token = localStorage.getItem("access_token");
+    let token = Cookies.get("access_token"); // Use Cookies instead of localStorage
 
     if (!checkTokenExpiration()) {
       const newToken = await refreshToken();
@@ -197,7 +196,7 @@ const ProfileInfo = () => {
     e.preventDefault();
     setLoading(true);
 
-    let token = localStorage.getItem("access_token");
+    let token = Cookies.get("access_token"); // Use Cookies instead of localStorage
 
     if (!checkTokenExpiration()) {
       const newToken = await refreshToken();

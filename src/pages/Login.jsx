@@ -4,6 +4,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "../components/Button";
 import assets from "../assets/assets";
 import { useAuth } from "../Context/AuthProvider";
+import Cookies from "js-cookie";
 
 export function Login() {
   const { login } = useAuth();
@@ -15,7 +16,7 @@ export function Login() {
 
   // Check authentication status on component mount
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = Cookies.get("access_token");
     if (token) {
       navigate("/profile");
     }
@@ -45,7 +46,6 @@ export function Login() {
     }
 
     try {
-      // Removed email from URL and fixed extra spaces
       const response = await fetch(
         `http://75.119.146.185:4444/login?phone=${formData.phone}&password=${formData.password}`,
         {
@@ -66,7 +66,8 @@ export function Login() {
         );
       }
 
-      localStorage.setItem("access_token", data.access_token);
+      Cookies.set("access_token", data.access_token, { expires: 7 }); // Expires in 7 days
+      Cookies.set("user_info", JSON.stringify(data.user), { expires: 7 }); // Store user info
       login(data.access_token);
       alert("Login successful!");
       navigate("/profile");

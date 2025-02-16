@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
-import {
-  FaInstagram,
-  FaYoutube,
-  FaFacebook,
-  FaSignOutAlt,
-} from "react-icons/fa";
+import { FaInstagram, FaYoutube, FaFacebook, FaSignOutAlt } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import SelectCreator from "../components/SelectCreator";
+import Cookies from "js-cookie"; // Import js-cookie
 
 const Profile = () => {
   const { logout } = useAuth();
@@ -20,7 +16,7 @@ const Profile = () => {
   useEffect(() => {
     if (user) return; // Skip fetching if user data is already available
 
-    const token = localStorage.getItem("access_token");
+    const token = Cookies.get("access_token"); // Use Cookies instead of localStorage
     if (!token) {
       navigate("/login", { replace: true });
       return;
@@ -38,7 +34,7 @@ const Profile = () => {
 
         if (response.status === 401) {
           console.error("Unauthorized! Token may be expired or invalid.");
-          localStorage.removeItem("access_token");
+          Cookies.remove("access_token"); // Use Cookies instead of localStorage
           navigate("/login");
           return;
         }
@@ -58,10 +54,10 @@ const Profile = () => {
 
     fetchUserProfile();
   }, [navigate, user]);
-  // Add `user` as a dependency to avoid unnecessary fetch calls
 
   const handleLogout = () => {
     logout();
+    Cookies.remove("access_token"); // Use Cookies instead of localStorage
     navigate("/login");
   };
 

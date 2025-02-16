@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../Context/AuthProvider";
 
 const Footer = () => {
   const location = useLocation();
