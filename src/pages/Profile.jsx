@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
-import { FaInstagram, FaYoutube, FaFacebook, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaYoutube,
+  FaFacebook,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCog, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/Navbar";
 import SelectCreator from "../components/SelectCreator";
 import Cookies from "js-cookie"; // Import js-cookie
@@ -12,6 +19,7 @@ const Profile = () => {
   const { state } = useLocation();
   const [user, setUser] = useState(state?.user || null);
   const [loading, setLoading] = useState(!user);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (user) return; // Skip fetching if user data is already available
@@ -60,15 +68,20 @@ const Profile = () => {
     Cookies.remove("access_token"); // Use Cookies instead of localStorage
     navigate("/login");
   };
+  const handleEditClick = () => navigate("/profileinfo");
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
   if (!user)
     return <div className="text-center py-10">User data not found</div>;
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="realtive max-w-5xl mx-auto">
       <Navbar />
-      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mt-1">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mt-1 relative">
         <div className="flex items-center justify-evenly">
           <div className="w-24 h-24 sm:w-40 sm:h-40 rounded-full overflow-hidden">
             <img
@@ -102,30 +115,59 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="mt-4 flex items-center justify-center space-x-4 sm:space-x-6">
-          {user.social_media && (
-            <>
-              <div className="flex gap-2 items-center shadow-md p-2 rounded-lg">
-                <FaInstagram className="text-pink-500 text-xl" />
-                <p className="text-pink-500 font-semibold">
-                  {user.social_media.instagram}
-                </p>
-              </div>
-              <div className="flex gap-2 items-center shadow-md p-2 rounded-lg">
-                <FaYoutube className="text-red-500 text-xl" />
-                <p className="text-red-500 font-semibold">
-                  {user.social_media.youtube}
-                </p>
-              </div>
-              <div className="flex gap-2 items-center shadow-md p-2 rounded-lg">
-                <FaFacebook className="text-blue-700 text-xl" />
-                <p className="text-blue-700 font-semibold">
-                  {user.social_media.facebook}
-                </p>
-              </div>
-            </>
-          )}
+        <button className="absolute top-4 right-4" onClick={toggleSidebar}>
+          <FontAwesomeIcon icon={faCog} className="text-gray-600 text-lg" />
+        </button>
+      </div>
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 right-[410px] rounded-lg transform -translate-x-1/2 w-[10%] bg-white h-[50%] mt-[75px] z-50 transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >
+        <div className="p-4">
+          {/* Cross icon to close the sidebar */}
+          <button className="absolute top-2 right-2" onClick={toggleSidebar}>
+            <FontAwesomeIcon icon={faTimes} className="text-gray-600 text-lg" />
+          </button>
+          <h2 className="text-lg font-semibold">Settings</h2>
+          <ul className="mt-4">
+            <li onClick={handleEditClick}
+            className="py-2 px-4 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200">
+              Edit Profile
+            </li>
+            <li
+              className="py-2 px-4 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200"
+              onClick={handleLogout}
+            >
+              Logout
+            </li>
+          </ul>
         </div>
+      </div>
+      <div className="mt-4 flex items-center justify-center space-x-4 sm:space-x-6">
+        {user.social_media && (
+          <>
+            <div className="flex gap-2 items-center shadow-md p-2 rounded-lg">
+              <FaInstagram className="text-pink-500 text-xl" />
+              <p className="text-pink-500 font-semibold">
+                {user.social_media.instagram}
+              </p>
+            </div>
+            <div className="flex gap-2 items-center shadow-md p-2 rounded-lg">
+              <FaYoutube className="text-red-500 text-xl" />
+              <p className="text-red-500 font-semibold">
+                {user.social_media.youtube}
+              </p>
+            </div>
+            <div className="flex gap-2 items-center shadow-md p-2 rounded-lg">
+              <FaFacebook className="text-blue-700 text-xl" />
+              <p className="text-blue-700 font-semibold">
+                {user.social_media.facebook}
+              </p>
+            </div>
+          </>
+        )}
       </div>
       <div className="bg-gradient-to-b from-purple-100 via-white to-purple-100 rounded-lg shadow-md p-4">
         <h3 className="text-2xl font-semibold text-center text-gray-600">
@@ -159,12 +201,7 @@ const Profile = () => {
       </div>
       <div className="fixed bottom-0 w-full bg-purple-100 p-4 shadow-md max-w-5xl mx-auto">
         <SelectCreator />
-        <button
-          onClick={handleLogout}
-          className="w-full bg-red-500 text-white py-2 rounded-lg mt-2 hover:bg-red-600 transition-colors flex items-center justify-center"
-        >
-          <FaSignOutAlt className="mr-2" /> Logout
-        </button>
+        
       </div>
     </div>
   );
