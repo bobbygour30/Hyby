@@ -5,7 +5,7 @@ import { FaInstagram, FaYoutube, FaFacebook } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/Navbar";
-import SelectCreator from "../components/SelectCreator";
+import Footer from "../components/Footer";
 import Cookies from "js-cookie";
 
 const Profile = () => {
@@ -154,7 +154,6 @@ const Profile = () => {
               Logout
             </li>
           </ul>
-          
         </div>
       </div>
       <div className="mt-4 flex items-center justify-center space-x-4 sm:space-x-6">
@@ -211,9 +210,7 @@ const Profile = () => {
           )}
         </div>
       </div>
-      <div className="fixed bottom-0 w-full bg-purple-100 p-4 shadow-md max-w-5xl mx-auto">
-        <SelectCreator />
-      </div>
+      <Footer />
     </div>
   );
 };
