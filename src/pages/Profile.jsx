@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../Context/AuthProvider";
-import {
-  FaInstagram,
-  FaYoutube,
-  FaFacebook,
-  FaSignOutAlt,
-} from "react-icons/fa";
+import { FaInstagram, FaYoutube, FaFacebook } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCog, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/Navbar";
 import SelectCreator from "../components/SelectCreator";
-import Cookies from "js-cookie"; // Import js-cookie
+import Cookies from "js-cookie";
 
 const Profile = () => {
   const { logout } = useAuth();
@@ -22,9 +17,9 @@ const Profile = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (user) return; // Skip fetching if user data is already available
+    if (user) return;
 
-    const token = Cookies.get("access_token"); // Use Cookies instead of localStorage
+    const token = Cookies.get("access_token");
     if (!token) {
       navigate("/login", { replace: true });
       return;
@@ -42,7 +37,7 @@ const Profile = () => {
 
         if (response.status === 401) {
           console.error("Unauthorized! Token may be expired or invalid.");
-          Cookies.remove("access_token"); // Use Cookies instead of localStorage
+          Cookies.remove("access_token");
           navigate("/login");
           return;
         }
@@ -50,8 +45,6 @@ const Profile = () => {
         if (!response.ok) throw new Error("Failed to fetch user data");
 
         const data = await response.json();
-        console.log(data);
-
         setUser(data);
       } catch (error) {
         console.error(error);
@@ -65,9 +58,10 @@ const Profile = () => {
 
   const handleLogout = () => {
     logout();
-    Cookies.remove("access_token"); // Use Cookies instead of localStorage
+    Cookies.remove("access_token");
     navigate("/login");
   };
+
   const handleEditClick = () => navigate("/profileinfo");
 
   const toggleSidebar = () => {
@@ -79,8 +73,15 @@ const Profile = () => {
     return <div className="text-center py-10">User data not found</div>;
 
   return (
-    <div className="realtive max-w-5xl mx-auto">
+    <div className="relative max-w-5xl mx-auto">
       <Navbar />
+      {/* Overlay for sidebar */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={toggleSidebar}
+        ></div>
+      )}
       <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mt-1 relative">
         <div className="flex items-center justify-evenly">
           <div className="w-24 h-24 sm:w-40 sm:h-40 rounded-full overflow-hidden">
@@ -121,28 +122,39 @@ const Profile = () => {
       </div>
       {/* Sidebar */}
       <div
-        className={`fixed top-0 right-[410px] rounded-lg transform -translate-x-1/2 w-[10%] bg-white h-[50%] mt-[75px] z-50 transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 left-1/2 transform -translate-x-1/2 w-full max-w-5xl h-[calc(100vh-64px)] bg-black bg-opacity-50 z-50 transition-all duration-300 ease-in-out ${
           isSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
+        onClick={toggleSidebar} // Clicking outside closes the sidebar
       >
-        <div className="p-4">
-          {/* Cross icon to close the sidebar */}
-          <button className="absolute top-2 right-2" onClick={toggleSidebar}>
-            <FontAwesomeIcon icon={faTimes} className="text-gray-600 text-lg" />
+        <div
+          className="absolute top-0 right-0 h-full w-72 bg-white bg-opacity-90 shadow-lg p-6 rounded-l-lg transition-transform duration-300 ease-in-out transform"
+          onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside
+        >
+          <button
+            className="absolute top-4 right-4 text-gray-600 text-xl"
+            onClick={toggleSidebar}
+          >
+            ×
           </button>
-          <h2 className="text-lg font-semibold">Settings</h2>
-          <ul className="mt-4">
-            <li onClick={handleEditClick}
-            className="py-2 px-4 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200">
+          <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
+            Settings
+          </h2>
+          <ul className="space-y-4">
+            <li
+              onClick={handleEditClick}
+              className="py-2 px-4 bg-gray-100 rounded-lg hover:bg-gray-200 cursor-pointer transition"
+            >
               Edit Profile
             </li>
             <li
-              className="py-2 px-4 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200"
+              className="py-2 px-4 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 cursor-pointer transition"
               onClick={handleLogout}
             >
               Logout
             </li>
           </ul>
+          
         </div>
       </div>
       <div className="mt-4 flex items-center justify-center space-x-4 sm:space-x-6">
@@ -201,7 +213,6 @@ const Profile = () => {
       </div>
       <div className="fixed bottom-0 w-full bg-purple-100 p-4 shadow-md max-w-5xl mx-auto">
         <SelectCreator />
-        
       </div>
     </div>
   );
